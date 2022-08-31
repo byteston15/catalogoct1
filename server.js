@@ -5,6 +5,7 @@ const {testConn} = require("./Db/test");
 //Rutas
 const r_ciudad = require("./Routes/ciudad");
 const r_giro = require("./Routes/giro");
+const r_comuna = require('./Routes/comuna');
 const app = express();
 
 //Configuración de dotenv
@@ -24,10 +25,20 @@ app.use(express.json());
     Métodos : GET {/ciudades}
 */
 app.use(process.env.RUTA, r_ciudad);
+
 /* @Giro
     Ruta "http://localhost:8000/api/v1/ct1/giros"
     Métodos : GET {/giros}
 */
 app.use(process.env.RUTA,r_giro)
+
+/* @Comuna
+    Ruta "http://localhost:8000/api/v1/ct1/comunas"
+    Métodos : GET {/comunas}
+
+*/
+app.use(process.env.RUTA, r_comuna);
+
+
 //listen
 app.listen(PORT, ()=> console.log(`Server running on http://localhost:${PORT}`.green))
