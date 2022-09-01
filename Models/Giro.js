@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sq = require("../Db/conn");
+const Cliente = require("./Cliente");
 
 const Giro = sq.define('Giro',{
     id_giro : {
@@ -12,5 +13,15 @@ const Giro = sq.define('Giro',{
         allowNull : false
     }
 }, {freezeTableName : true} );
+
+Giro.hasMany(Cliente, {
+    foreignKey : 'fk_id_giro',
+    sourceKey : 'id_giro'
+});
+
+Cliente.belongsTo(Giro, {
+    foreignKey : 'fk_id_giro',
+    targetKey : 'id_giro'
+});
 
 module.exports = Giro;
