@@ -36,17 +36,17 @@ app.use(process.env.RUTA, r_ciudad);
      "http://localhost:8000/api/v1/ct1/giro/:id/clientes"
     -- RELACIÓN GIRO A CLIENTE -- 
         Métodos    
-        GET().getGirosCliente(); [!]
+        GET().getGirosCliente(); [x]
 */
 app.use(process.env.RUTA,r_giro)
 
 /* @Comuna
     Rutas
         "http://localhost:8000/api/v1/ct1/comunas"
-            Métodos : GET.().getComuna()
+            Métodos : GET.().getComuna()[x]
         -- RELACIÓN COMUNA A CLIENTE --
         "https://localhost:8000/api/v1/ct1/comuna/:id/clientes"
-            Métodos : GET.().getCLientByComuna()
+            Métodos : GET.().getCLientByComuna()[x]
 */
 app.use(process.env.RUTA, r_comuna);
 
@@ -54,9 +54,11 @@ app.use(process.env.RUTA, r_comuna);
 /*@Cliente
     Rutas
         "http://localhost:8000/api/v1/ct1/clientes"
-            Métodos : GET().getClientes()
+            Métodos : GET().getClientes()[x]
         "http://localhost:8000/api/v1/ct1/cliente/:id"
             Métodos : POST().getCliente().updateCliente().deleteCLiente()
+        "http://localhost:8000/api/v1/ct1/clienteFull/:id"
+            Métodos : GET().getClienteFull()
      */
 app.use(process.env.RUTA, r_cliente);
      
