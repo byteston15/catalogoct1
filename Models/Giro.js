@@ -15,13 +15,12 @@ const Giro = sq.define('Giro',{
 }, {freezeTableName : true} );
 
 Giro.hasMany(Cliente, {
-    foreignKey : 'fk_id_giro',
+    foreignKey : {name : 'fk_id_giro', allowNull : false},
     sourceKey : 'id_giro'
 });
 
 Cliente.belongsTo(Giro, {
-    foreignKey : 'fk_id_giro',
-    targetKey : 'id_giro'
-});
+    foreignKey : {name : 'fk_id_giro', allowNull : false},
+    targetKey : 'id_giro'});
 
 module.exports = Giro;

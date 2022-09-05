@@ -47,18 +47,18 @@ exports.getCliente = async (req, res, next) => {
 exports.updateCliente = async (req, res, next) => {
   try {
     const cliente = await Cliente.update(
-      { rut: req.body },
-      { where: req.params.id }
+       req.body,
+      {where: {rut : req.params.id}} 
     );
     if (!cliente) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         error: "No existen clientes para el id indicado",
       });
     }
     res.status(200).json({
       success: true,
-      data: cliente,
+      data: req.body,
     });
   } catch (err) {
     res.status(500).json({
@@ -77,7 +77,7 @@ exports.createCliente = async (req, res, next) => {
       data: cliente,
     });
   } catch (err) {
-    console.log(`Error message : err.stack`);
+    console.log(`Error message : ${err.stack}`);
     res.status(500).json({
       success: false,
       message: err.message,
@@ -88,9 +88,9 @@ exports.createCliente = async (req, res, next) => {
 /*DELETE CLIENTE */
 exports.deleteCliente = async (req, res, next) => {
   try {
-    const cliente = await Cliente.destroy(req.params.id);
+    const cliente = await Cliente.destroy({where : {rut : req.params.id}});
     if (!cliente) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "No existe cliente con el id indicado",
       });

@@ -14,7 +14,7 @@ const Comuna = sq.define('Comuna', {
     }, {freezeTableName : true})
 
 Comuna.hasMany(Cliente, {
-    foreignKey : 'fk_id_comuna',
+    foreignKey :{name : 'fk_id_comuna', allowNull : false} ,
     sourceKey : 'id_comuna'
 });
 
