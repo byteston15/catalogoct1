@@ -46,10 +46,9 @@ exports.getCliente = async (req, res, next) => {
 /* UPDATE CLIENTE */
 exports.updateCliente = async (req, res, next) => {
   try {
-    const cliente = await Cliente.update(
-       req.body,
-      {where: {rut : req.params.id}} 
-    );
+    const cliente = await Cliente.update(req.body, {
+      where: { rut: req.params.id },
+    });
     if (!cliente) {
       return res.status(404).json({
         success: false,
@@ -88,7 +87,7 @@ exports.createCliente = async (req, res, next) => {
 /*DELETE CLIENTE */
 exports.deleteCliente = async (req, res, next) => {
   try {
-    const cliente = await Cliente.destroy({where : {rut : req.params.id}});
+    const cliente = await Cliente.destroy({ where: { rut: req.params.id } });
     if (!cliente) {
       return res.status(404).json({
         success: false,

@@ -7,6 +7,7 @@ const r_ciudad = require("./Routes/ciudad");
 const r_giro = require("./Routes/giro");
 const r_comuna = require('./Routes/comuna');
 const r_cliente = require('./Routes/cliente');
+const r_categoria = require('./Routes/categoria');
 const app = express();
 
 //Configuración de dotenv
@@ -56,11 +57,19 @@ app.use(process.env.RUTA, r_comuna);
         "http://localhost:8000/api/v1/ct1/clientes"
             Métodos : GET().getClientes()[x]
         "http://localhost:8000/api/v1/ct1/cliente/:id"
-            Métodos : POST().getCliente().updateCliente().deleteCLiente()
+            Métodos : GET().getCliente() PUT().updateCliente() DELETE().deleteCLiente()
         "http://localhost:8000/api/v1/ct1/clienteFull/:id"
             Métodos : GET().getClienteFull()
      */
 app.use(process.env.RUTA, r_cliente);
+/*@Categoria
+    Rutas
+        "http://localhost:8000/api/v1/ct1/categorias"
+            Métodos : POST().createCategoria 
+        "http://localhost:8000/api/v1/ct1/categorias/:id"
+            Métodos : GET().getCliente() GET()
+        */
+app.use(process.env.RUTA, r_categoria);
      
 //TERMINO DE RUTAS
 
