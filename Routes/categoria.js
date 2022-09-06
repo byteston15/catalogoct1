@@ -15,4 +15,5 @@ router
   .put(updateCategoria)
   .delete(deleteCategoria);
 
+
 module.exports = router;

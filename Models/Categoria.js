@@ -14,5 +14,6 @@ const Categoria = sq.define('Categoria', {
 }, {freezeTableName : true});
 
 
+
 module.exports = Categoria
 
