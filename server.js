@@ -1,19 +1,20 @@
 const express = require("express");
 const colors = require("colors");
 const dotenv = require("dotenv");
-const {testConn} = require("./Db/test");
+const { testConn } = require("./Db/test");
 //Rutas
 const r_ciudad = require("./Routes/ciudad");
 const r_giro = require("./Routes/giro");
-const r_comuna = require('./Routes/comuna');
-const r_cliente = require('./Routes/cliente');
-const r_categoria = require('./Routes/categoria');
-const r_lp = require('./Routes/lista_precio');
-const r_login = require('./Routes/auth')
+const r_comuna = require("./Routes/comuna");
+const r_cliente = require("./Routes/cliente");
+const r_categoria = require("./Routes/categoria");
+const r_lp = require("./Routes/lista_precio");
+const r_login = require("./Routes/auth");
+const { validAuth } = require("./Middlewares/validAuthenticate");
 const app = express();
 
 //Configuración de dotenv
-dotenv.config({path: './Config/config.env'});
+dotenv.config({ path: "./Config/config.env" });
 //CONSTANTES
 const PORT = process.env.PORT || 8080;
 
@@ -41,7 +42,7 @@ app.use(process.env.RUTA, r_ciudad);
         Métodos    
         GET().getGirosCliente(); [x]
 */
-app.use(process.env.RUTA,r_giro)
+app.use(process.env.RUTA, r_giro);
 
 /* @Comuna
     Rutas
@@ -53,7 +54,6 @@ app.use(process.env.RUTA,r_giro)
 */
 app.use(process.env.RUTA, r_comuna);
 
-
 /*@Cliente
     Rutas
         "http://localhost:8000/api/v1/ct1/clientes"
@@ -63,7 +63,8 @@ app.use(process.env.RUTA, r_comuna);
         "http://localhost:8000/api/v1/ct1/clienteFull/:id"
             Métodos : GET().getClienteFull()
      */
-app.use(process.env.RUTA, r_cliente);
+app.use(process.env.RUTA, validAuth, r_cliente);
+
 /*@Categoria
     Rutas
         "http://localhost:8000/api/v1/ct1/categorias"
@@ -74,11 +75,11 @@ app.use(process.env.RUTA, r_cliente);
 app.use(process.env.RUTA, r_categoria);
 
 app.use(process.env.RUTA, r_lp);
-app.use(process.env.RUTA, r_login)
-     
+app.use(process.env.RUTA, r_login);
+
 //TERMINO DE RUTAS
 
-
-
 //listen
-app.listen(PORT, ()=> console.log(`Server running on http://localhost:${PORT}`.green))
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`.green)
+);
