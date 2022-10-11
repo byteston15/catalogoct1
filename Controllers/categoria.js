@@ -1,14 +1,18 @@
 const Categoria = require('../Models/Categoria');
 const colors = require('colors')
+const sq = require("../Db/conn")
 
 exports.createCategoria = async(req, res, next) => {
     try {
+        const t = sq.transaction()
        const categoria = await Categoria.create(req.body);
+       await t.commit()
        res.status(201).json({
         success : true,
         data : categoria
        })
     } catch (err) {
+        t.rollback()
         console.log(`Error stack : ${err.stack}`);
         res.status(500).json({
         success : false,

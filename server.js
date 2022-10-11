@@ -9,6 +9,7 @@ const r_comuna = require('./Routes/comuna');
 const r_cliente = require('./Routes/cliente');
 const r_categoria = require('./Routes/categoria');
 const r_lp = require('./Routes/lista_precio');
+const r_login = require('./Routes/auth')
 const app = express();
 
 //Configuración de dotenv
@@ -73,6 +74,7 @@ app.use(process.env.RUTA, r_cliente);
 app.use(process.env.RUTA, r_categoria);
 
 app.use(process.env.RUTA, r_lp);
+app.use(process.env.RUTA, r_login)
      
 //TERMINO DE RUTAS
 

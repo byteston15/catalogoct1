@@ -9,7 +9,10 @@ const Lista_precio = sq.define('Lista_precio', {
     },
     nombre : {
         type : DataTypes.STRING(100),
-        allowNull : true
+        allowNull : true,
+        set(val){
+            this.setDataValue('nombre', val.toUpperCase())
+        }
     }
 },{freezeTableName : true});
 
