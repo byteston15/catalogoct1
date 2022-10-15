@@ -1,6 +1,7 @@
 const sq = require("../Db/conn");
 const { DataTypes } = require("sequelize");
 const { encriptPassword } = require("../Utils/passUtil");
+const Lista_Producto = require("./Lista_Producto");
 
 const User = sq.define(
   "User",
@@ -14,6 +15,7 @@ const User = sq.define(
     nombre: {
       type: DataTypes.STRING(100),
       allowNull: false,
+      unique: true,
       set(val) {
         this.setDataValue("nombre", val.toUpperCase());
       },
@@ -32,5 +34,20 @@ const User = sq.define(
   },
   { freezeTableName: true, paranoid: true }
 );
+
+User.hasMany(Lista_Producto, {
+  foreignKey: {
+    name: "fk_user_lproducto",
+    allowNull: false,
+  },
+  sourceKey: "id_user",
+});
+
+Lista_Producto.belongsTo(User, {
+  foreignKey: {
+    name: "fk_user_lproducto",
+    allowNull: false,
+  },
+});
 
 module.exports = User;

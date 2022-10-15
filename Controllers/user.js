@@ -66,4 +66,68 @@ exports.getUsers = async (req, res, next) => {
   });
 };
 
-exports.getUser = async (req, res, next) => {};
+exports.updateUser = async (req, res, next) => {
+  const t = sq.transaction();
+  try {
+    const user = await User.update(req.params.id, {
+      where: { id: req.params.id },
+    });
+    if (!user) {
+      await t.rollback();
+      return res.status(404).json({
+        success: false,
+        data: {
+          error: "No data",
+        },
+      });
+    }
+    await t.commit();
+    res.status(200).json({
+      success: true,
+      data: {
+        update: req.body,
+      },
+    });
+  } catch (err) {
+    console.log(err.stack);
+    await t.rollback();
+    res.status(500).json({
+      success: false,
+      data: {
+        error: err.message,
+      },
+    });
+  }
+};
+
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.destroy({ where: { id: req.params.id } });
+    const t = sq.transaction();
+    if (!user) {
+      await t.rollback();
+      return res.status(404).json({
+        success: false,
+        data: {
+          error: "No data",
+        },
+      });
+    }
+    await t.commit();
+    res.status(200).json({
+      success: true,
+      data: {
+        deleted: `Deleted ${req.params.id} succesfully`,
+      },
+    });
+  } catch (err) {
+    console.log(err.stack);
+    await t.rollback();
+    res.status(500).json({
+      success: false,
+      data: {
+        error: err.message,
+      },
+    });
+  }
+};

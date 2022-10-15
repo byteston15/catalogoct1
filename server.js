@@ -10,6 +10,7 @@ const r_cliente = require("./Routes/cliente");
 const r_categoria = require("./Routes/categoria");
 const r_lp = require("./Routes/lista_precio");
 const r_login = require("./Routes/auth");
+const r_user = require("./Routes/user");
 const { validAuth } = require("./Middlewares/validAuthenticate");
 const app = express();
 
@@ -76,6 +77,7 @@ app.use(process.env.RUTA, r_categoria);
 
 app.use(process.env.RUTA, r_lp);
 app.use(process.env.RUTA, r_login);
+app.use(process.env.RUTA, r_user);
 
 //TERMINO DE RUTAS
 
