@@ -10,7 +10,7 @@ const {
 } = require("../Controllers/cliente");
 
 router
-  .route("/cliente/:id")
+  .route("/clientes/:id")
   .get(getCliente)
   .put(updateCliente)
   .delete(deleteCliente);

@@ -3,6 +3,7 @@ const colors = require("colors");
 const Giro = require("../Models/Giro");
 const Comuna = require("..//Models/Comuna");
 const Ciudad = require("../Models/Ciudad");
+const sq = require("../Db/conn");
 
 /*DESPLIEGA TODOS LOS CLIENTES */
 exports.getClientes = async (req, res, next) => {
@@ -25,7 +26,7 @@ exports.getCliente = async (req, res, next) => {
   try {
     const cliente = await Cliente.findByPk(req.params.id);
     if (!cliente) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         error: "No existen clientes para el id indicado",
       });
@@ -46,18 +47,21 @@ exports.getCliente = async (req, res, next) => {
 /* UPDATE CLIENTE */
 exports.updateCliente = async (req, res, next) => {
   try {
-    const cliente = await Cliente.update(req.body, {
-      where: { rut: req.params.id },
-    });
-    if (!cliente) {
-      return res.status(404).json({
-        success: false,
-        error: "No existen clientes para el id indicado",
+    const t = sq.transaction(async (t) => {
+      const cliente = await Cliente.update(req.body, {
+        where: { rut: req.params.id },
       });
-    }
-    res.status(200).json({
-      success: true,
-      data: req.body,
+      if (!cliente) {
+        return res.status(404).json({
+          success: false,
+          error: "No existen clientes para el id indicado",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        data: req.body,
+      });
+      return cliente;
     });
   } catch (err) {
     res.status(500).json({
@@ -70,10 +74,13 @@ exports.updateCliente = async (req, res, next) => {
 /*CREATE CLIENTE */
 exports.createCliente = async (req, res, next) => {
   try {
-    const cliente = await Cliente.create(req.body);
-    res.status(201).json({
-      success: true,
-      data: cliente,
+    const result = await sq.transaction(async (t) => {
+      const cliente = await Cliente.create(req.body, { transaction: t });
+      res.status(201).json({
+        success: true,
+        data: cliente,
+      });
+      return cliente;
     });
   } catch (err) {
     console.log(`Error message : ${err.stack}`);
@@ -87,14 +94,16 @@ exports.createCliente = async (req, res, next) => {
 /*DELETE CLIENTE */
 exports.deleteCliente = async (req, res, next) => {
   try {
-    const cliente = await Cliente.destroy({ where: { rut: req.params.id } });
-    if (!cliente) {
-      return res.status(404).json({
-        success: false,
-        message: "No existe cliente con el id indicado",
-      });
-    }
-    res.status(200).json({ success: true, data: {} });
+    const result = await sq.transaction(async (t) => {
+      const cliente = await Cliente.destroy({ where: { rut: req.params.id } });
+      if (!cliente) {
+        return res.status(404).json({
+          success: false,
+          message: "No existe cliente con el id indicado",
+        });
+      }
+      res.status(200).json({ success: true, data: {} });
+    });
   } catch (err) {
     console.log(err.stack);
     res.status(500).json({

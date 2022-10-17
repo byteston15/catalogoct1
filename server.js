@@ -10,7 +10,8 @@ const r_cliente = require("./Routes/cliente");
 const r_categoria = require("./Routes/categoria");
 const r_lp = require("./Routes/lista_precio");
 const r_login = require("./Routes/auth");
-const r_user = require("./Routes/user");
+const r_user = require("./Routes/usuario");
+const r_producto = require("./Routes/producto");
 const { validAuth } = require("./Middlewares/validAuthenticate");
 const app = express();
 
@@ -25,59 +26,41 @@ testConn();
 //json middleware
 app.use(express.json());
 
-//ROUTES
-/* @Ciudad
-    Ruta "http://localhost:8000/api/v1/ct1/ciudades"
-    Métodos : GET getCiudades{/ciudades}[x]
-
-*/
+/*Métodos : GET({controlador : getGiros, ruta : "/giros"},
+ {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
 app.use(process.env.RUTA, r_ciudad);
 
-/* @Giro
-    Rutas
-     "http://localhost:8000/api/v1/ct1/giros"
-        Métodos
-        GET().getGiros()[x]
-     "http://localhost:8000/api/v1/ct1/giro/:id/clientes"
-    -- RELACIÓN GIRO A CLIENTE -- 
-        Métodos    
-        GET().getGirosCliente(); [x]
-*/
+/*Métodos : GET({controlador : getGiros, ruta : "/giros"},
+ {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
 app.use(process.env.RUTA, r_giro);
 
-/* @Comuna
-    Rutas
-        "http://localhost:8000/api/v1/ct1/comunas"
-            Métodos : GET.().getComuna()[x]
-        -- RELACIÓN COMUNA A CLIENTE --
-        "https://localhost:8000/api/v1/ct1/comuna/:id/clientes"
-            Métodos : GET.().getCLientByComuna()[x]
-*/
+/*Métodos : GET({controlador : getGiros, ruta : "/giros"},
+ {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
 app.use(process.env.RUTA, r_comuna);
 
-/*@Cliente
-    Rutas
-        "http://localhost:8000/api/v1/ct1/clientes"
-            Métodos : GET().getClientes()[x]
-        "http://localhost:8000/api/v1/ct1/cliente/:id"
-            Métodos : GET().getCliente() PUT().updateCliente() DELETE().deleteCLiente()
-        "http://localhost:8000/api/v1/ct1/clienteFull/:id"
-            Métodos : GET().getClienteFull()
-     */
-app.use(process.env.RUTA, validAuth, r_cliente);
+/*Métodos : GET({controlador : getGiros, ruta : "/giros"},
+ {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
+app.use(process.env.RUTA, r_cliente);
 
-/*@Categoria
-    Rutas
-        "http://localhost:8000/api/v1/ct1/categorias"
-            Métodos : POST().createCategoria 
-        "http://localhost:8000/api/v1/ct1/categorias/:id"
-            Métodos : GET().getCliente() GET()
-        */
+/*Métodos : GET({controlador : getGiros, ruta : "/giros"},
+ {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
 app.use(process.env.RUTA, r_categoria);
 
+/*Métodos : GET({controlador : getGiros, ruta : "/giros"},
+ {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
 app.use(process.env.RUTA, r_lp);
+
+/*Métodos : GET({controlador : getGiros, ruta : "/giros"},
+ {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
 app.use(process.env.RUTA, r_login);
+
+/*Métodos : GET({controlador : getGiros, ruta : "/giros"},
+ {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
 app.use(process.env.RUTA, r_user);
+
+/*Métodos : GET({controlador : getGiros, ruta : "/giros"},
+ {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
+app.use(process.env.RUTA, r_producto);
 
 //TERMINO DE RUTAS
 
