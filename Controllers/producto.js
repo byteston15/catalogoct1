@@ -19,7 +19,7 @@ exports.createProducto = async (req, res, next) => {
     res.status(500).json({
       success: false,
       data: {
-        error: err.message,
+        error: err.mess, // LIKage,
       },
     });
   }
@@ -27,17 +27,16 @@ exports.createProducto = async (req, res, next) => {
 
 exports.getProductos = async (req, res, next) => {
   try {
-    if (req.params.descripcion) {
-      const producto = await Producto.findAll({
-        where: {
-          descripcion: {
-            [Op.iLike]: "%req.params.descripcion",
-          },
+    var whereCondition = {};
+    if (req.query.descripcion) {
+      whereCondition = {
+        descripcion: {
+          [Op.like]: `%${req.query.descripcion}%`,
         },
-      });
-    } else {
-      const producto = await Producto.findAll();
+      };
+      console.log(whereCondition);
     }
+    const producto = await Producto.findAll({ where: whereCondition });
     if (!producto) {
       return res.status(404).json({
         success: false,
@@ -46,6 +45,7 @@ exports.getProductos = async (req, res, next) => {
         },
       });
     }
+    console.log(whereCondition);
     res.status(200).json({
       success: true,
       len: producto.length,
@@ -67,7 +67,7 @@ exports.getProductos = async (req, res, next) => {
 exports.updateProducto = async (req, res, next) => {
   try {
     const t = sq.transaction(async (t) => {
-      const producto = await Producto.update(req.params.id, {
+      const producto = await Producto.update(req.body, {
         where: { codigo: req.params.id },
       });
       if (!producto) {
@@ -81,20 +81,12 @@ exports.updateProducto = async (req, res, next) => {
       res.status(200).json({
         success: true,
         data: {
-          update: req.body,
+          updated: req.body,
         },
       });
       return producto;
     });
-  } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: false,
-      data: {
-        error: err.message,
-      },
-    });
-  }
+  } catch (err) {}
 };
 
 exports.deleteProducto = async (req, res, next) => {

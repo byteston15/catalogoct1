@@ -30,9 +30,8 @@ const Producto = sq.define(
     barra: {
       type: DataTypes.STRING(30),
       allowNull: true,
-      defaultValue: this.codigo,
       set(val) {
-        this.setDataValue("barra", val.toUpperCase());
+        this.setDataValue("codigo", val.toUpperCase());
       },
     },
   },
