@@ -121,22 +121,8 @@ exports.findProductByCategoria = async (req, res, next) => {
     const p = await Producto.findAll({
       where: {
         fk_categoria_producto: req.params.id,
-        attributes: ["codigo", "descripcion", "barra"],
-        include: [
-          {
-            model: Lista_Producto,
-            attributes: ["monto", "desde", "hasta", "liquidacion"],
-            include: {
-              model: Lista_precio,
-              attributes: ["nombre"],
-            },
-          },
-          {
-            model: Foto,
-            attributes: ["url", "name"],
-          },
-        ],
       },
+      attributes: ["codigo", "descripcion", "barra"],
     });
     if (!p) {
       return res.status(404).json({

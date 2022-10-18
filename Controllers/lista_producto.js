@@ -3,15 +3,14 @@ const sq = require("../Db/conn");
 
 exports.createPrecio = async (req, res, next) => {
   try {
-    const t = sq.transaction(async (t) => {
-      const lp = await Lista_Producto.create(req.body);
-      await t.commit();
+    const result = sq.transaction(async (t) => {
+      const precio = await Lista_Producto.create(req.body);
       res.status(201).json({
         success: true,
-        data: lp,
+        data: precio,
       });
+      return precio;
     });
-    return lp;
   } catch (err) {
     console.log(`Error stack : ${err.stack}`);
     res.status(500).json({

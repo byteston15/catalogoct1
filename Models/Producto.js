@@ -30,13 +30,17 @@ const Producto = sq.define(
     barra: {
       type: DataTypes.STRING(30),
       allowNull: true,
-      set(val) {
-        this.setDataValue("codigo", val.toUpperCase());
-      },
+      defaultValue: this.codigo,
     },
   },
   { freezeTableName: true, paranoid: true }
 );
+
+Producto.beforeCreate(async (producto, options) => {
+  if (!producto.dataValues.barra) {
+    producto.dataValues.barra = producto.dataValues.codigo;
+  }
+});
 
 Producto.hasMany(Foto, {
   foreingKey: {

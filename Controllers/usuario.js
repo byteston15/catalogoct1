@@ -26,6 +26,7 @@ exports.createUser = async (req, res, next) => {
 
 exports.getUsers = async (req, res, next) => {
   try {
+    const user = await User;
     if (!user) {
       res.status(402).json({
         success: false,

@@ -34,7 +34,6 @@ exports.getProductos = async (req, res, next) => {
           [Op.like]: `%${req.query.descripcion}%`,
         },
       };
-      console.log(whereCondition);
     }
     const producto = await Producto.findAll({ where: whereCondition });
     if (!producto) {
@@ -45,7 +44,6 @@ exports.getProductos = async (req, res, next) => {
         },
       });
     }
-    console.log(whereCondition);
     res.status(200).json({
       success: true,
       len: producto.length,

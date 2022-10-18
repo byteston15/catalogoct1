@@ -19,7 +19,7 @@ router.route("/productos/:id").put(updateProducto).delete(deleteProducto);
 router.route("/productos").post(createProducto).get(getProductos);
 
 //Precios
-router.route("/producto/precio").post(createPrecio);
-router.route("/producto/precio/:id").put(updatePrecio).delete(deletePrecio);
+router.route("/productos/precio").post(createPrecio);
+router.route("/productos/precio/:id").put(updatePrecio).delete(deletePrecio);
 
 module.exports = router;
