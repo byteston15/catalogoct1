@@ -119,8 +119,22 @@ exports.deleteCategoria = async (req, res, next) => {
 exports.findProductByCategoria = async (req, res, next) => {
   try {
     const precios = await Producto.findAll({
-      where: {},
-      include: Lista_Producto,
+      where: {
+        "$Categorium.id$": req.params.id,
+      },
+      attributes: ["codigo", "descripcion", "barra", "createdAt", "updatedAt"],
+      include: [
+        {
+          model: Lista_Producto,
+          attributes: ["desde", "hasta", "monto", "liquidacion"],
+          include: {
+            model: Lista_precio,
+            attributes: ["id", "nombre"],
+          },
+        },
+        { model: Foto, attributes: ["url"] },
+        { model: Categoria, attributes: ["id", "nombre"] },
+      ],
     });
     if (!precios) {
       return res.status(404).json({

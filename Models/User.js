@@ -38,7 +38,6 @@ const User = sq.define(
 User.hasMany(Lista_Producto, {
   foreignKey: {
     name: "fk_user_lproducto",
-    allowNull: false,
   },
   sourceKey: "id_user",
 });
@@ -48,6 +47,7 @@ Lista_Producto.belongsTo(User, {
     name: "fk_user_lproducto",
     allowNull: false,
   },
+  targetKey: "id_user",
 });
 
 module.exports = User;
