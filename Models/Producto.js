@@ -59,16 +59,16 @@ Foto.belongsTo(Producto, {
 });
 
 Producto.hasMany(Lista_Producto, {
-  foreingKey: {
-    name: "fk_producto_lproducto",
+  foreignKey: {
+    name: "fk_precio",
     allowNull: false,
   },
-  targetKey: "codigo",
+  sourceKey: "codigo",
 });
 
 Lista_Producto.belongsTo(Producto, {
   foreignKey: {
-    name: "fk_producto_lproducto",
+    name: "fk_precio",
     allowNull: false,
     primaryKey: true,
   },

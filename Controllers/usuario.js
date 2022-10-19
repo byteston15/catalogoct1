@@ -1,5 +1,6 @@
 const sq = require("../Db/conn");
 const User = require("../Models/User");
+const { Op } = require("sequelize");
 
 exports.createUser = async (req, res, next) => {
   try {
@@ -26,28 +27,22 @@ exports.createUser = async (req, res, next) => {
 
 exports.getUsers = async (req, res, next) => {
   try {
-    const user = await User;
-    if (!user) {
-      res.status(402).json({
-        success: false,
-        data: {
-          error: "No data",
+    var whereValues = {};
+    if (req.query.nombre) {
+      whereValues = {
+        nombre: {
+          [Op.like]: `%${req.query.nombre}%`,
         },
-      });
+      };
     }
-    if (!req.params.nombre) {
-      const user = await User.findAll({
-        where: {
-          rut: req.params.id,
-        },
-      });
-    } else {
-      const user = await User.findAll({
-        where: {
-          nombre: req.params.nombre,
-        },
-      });
-    }
+    const user = await User.findAll({ where: whereValues });
+    res.status(200).json({
+      success: true,
+      len: user.length,
+      data: {
+        user,
+      },
+    });
   } catch (err) {
     console.log(err.stack);
     res.status(500).json({
@@ -57,21 +52,15 @@ exports.getUsers = async (req, res, next) => {
       },
     });
   }
-
-  res.status(200).json({
-    success: true,
-    len: user.length,
-    data: {
-      user,
-    },
-  });
 };
 
 exports.updateUser = async (req, res, next) => {
   try {
     const t = sq.transaction(async (t) => {
-      const user = await User.update(req.params.id, {
-        where: { rut: req.params.id },
+      const user = await User.update(req.body, {
+        where: {
+          id_user: req.params.id,
+        },
       });
       if (!user) {
         return res.status(404).json({
@@ -103,7 +92,7 @@ exports.updateUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
   try {
     const t = sq.transaction(async (t) => {
-      const user = await User.destroy({ where: { rut: req.params.id } });
+      const user = await User.destroy({ where: { id_user: req.params.id } });
       if (!user) {
         return res.status(404).json({
           success: false,

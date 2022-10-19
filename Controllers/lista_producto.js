@@ -71,3 +71,24 @@ exports.deletePrecio = async (req, res, next) => {
     });
   }
 };
+
+exports.getPrecio = async (req, res, next) => {
+  try {
+    const precio = await Lista_Producto.findAll();
+    res.status(200).json({
+      success: true,
+      len: precio.length,
+      data: {
+        precio,
+      },
+    });
+  } catch (err) {
+    console.log(err.stack);
+    res.status(500).json({
+      success: false,
+      data: {
+        error: err.message,
+      },
+    });
+  }
+};

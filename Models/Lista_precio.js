@@ -22,7 +22,7 @@ const Lista_precio = sq.define(
 
 Lista_precio.hasMany(Lista_Producto, {
   foreignKey: {
-    name: "fk_lprecio_lproducto",
+    name: "fk_precio_listaprecio",
     allowNull: false,
   },
   sourceKey: "id",
@@ -30,7 +30,7 @@ Lista_precio.hasMany(Lista_Producto, {
 
 Lista_Producto.belongsTo(Lista_precio, {
   foreignKey: {
-    name: "fk_lprecio_lproducto",
+    name: "fk_precio_listaprecio",
     allowNull: false,
     primaryKey: true,
   },

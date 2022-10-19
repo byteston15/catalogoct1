@@ -118,13 +118,11 @@ exports.deleteCategoria = async (req, res, next) => {
 
 exports.findProductByCategoria = async (req, res, next) => {
   try {
-    const p = await Producto.findAll({
-      where: {
-        fk_categoria_producto: req.params.id,
-      },
-      attributes: ["codigo", "descripcion", "barra"],
+    const precios = await Producto.findAll({
+      where: {},
+      include: Lista_Producto,
     });
-    if (!p) {
+    if (!precios) {
       return res.status(404).json({
         success: false,
         data: {
@@ -134,9 +132,9 @@ exports.findProductByCategoria = async (req, res, next) => {
     }
     res.status(200).json({
       success: true,
-      len: p.length,
+      len: precios.length,
       data: {
-        p,
+        precios,
       },
     });
   } catch (err) {

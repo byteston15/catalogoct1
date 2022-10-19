@@ -8,7 +8,7 @@ const {
 } = require("../Controllers/producto");
 
 const {
-  getPrecios,
+  getPrecio,
   createPrecio,
   deletePrecio,
   updatePrecio,
@@ -19,7 +19,7 @@ router.route("/productos/:id").put(updateProducto).delete(deleteProducto);
 router.route("/productos").post(createProducto).get(getProductos);
 
 //Precios
-router.route("/productos/precio").post(createPrecio);
+router.route("/productos/precio").post(createPrecio).get(getPrecio);
 router.route("/productos/precio/:id").put(updatePrecio).delete(deletePrecio);
 
 module.exports = router;
