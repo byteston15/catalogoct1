@@ -17,11 +17,7 @@ exports.createCategoria = async (req, res, next) => {
       return categoria;
     });
   } catch (err) {
-    console.log(`Error stack : ${err.stack}`);
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    next(err);
   }
 };
 
@@ -118,7 +114,7 @@ exports.deleteCategoria = async (req, res, next) => {
 
 exports.findProductByCategoria = async (req, res, next) => {
   try {
-    const precios = await Producto.findAll({
+    const productos = await Producto.findAll({
       where: {
         "$Categorium.id$": req.params.id,
       },
@@ -136,7 +132,7 @@ exports.findProductByCategoria = async (req, res, next) => {
         { model: Categoria, attributes: ["id", "nombre"] },
       ],
     });
-    if (!precios) {
+    if (!productos) {
       return res.status(404).json({
         success: false,
         data: {
@@ -146,9 +142,9 @@ exports.findProductByCategoria = async (req, res, next) => {
     }
     res.status(200).json({
       success: true,
-      len: precios.length,
+      len: producots.length,
       data: {
-        precios,
+        productos,
       },
     });
   } catch (err) {

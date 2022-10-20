@@ -13,6 +13,7 @@ const r_login = require("./Routes/auth");
 const r_user = require("./Routes/usuario");
 const r_producto = require("./Routes/producto");
 const { validAuth } = require("./Middlewares/validAuthenticate");
+const { errorHandler } = require("./Middlewares/errorHandler");
 const app = express();
 
 //Configuración de dotenv
@@ -63,7 +64,7 @@ app.use(process.env.RUTA, r_user);
 app.use(process.env.RUTA, r_producto);
 
 //TERMINO DE RUTAS
-
+app.use(errorHandler);
 //listen
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`.green)
