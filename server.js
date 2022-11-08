@@ -26,6 +26,7 @@ testConn();
 
 //json middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 /*Métodos : GET({controlador : getGiros, ruta : "/giros"},
  {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/

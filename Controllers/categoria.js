@@ -4,6 +4,7 @@ const Producto = require("../Models/Producto");
 const Lista_Producto = require("../Models/Lista_Producto");
 const Foto = require("../Models/Foto");
 const Lista_precio = require("../Models/Lista_precio");
+const { Op } = require("sequelize");
 
 exports.createCategoria = async (req, res, next) => {
   try {
@@ -23,7 +24,17 @@ exports.createCategoria = async (req, res, next) => {
 
 exports.getCategorias = async (req, res, next) => {
   try {
-    const categoria = await Categoria.findAll();
+    let whereData = {};
+    if (req.query.nombre) {
+      whereData = {
+        where: {
+          nombre: {
+            [Op.like]: `%${req.query.nombre}%`,
+          },
+        },
+      };
+    }
+    const categoria = await Categoria.findAll(whereData);
     res.status(200).json({
       success: true,
       data: categoria,
@@ -142,7 +153,7 @@ exports.findProductByCategoria = async (req, res, next) => {
     }
     res.status(200).json({
       success: true,
-      len: producots.length,
+      len: productos.length,
       data: {
         productos,
       },

@@ -2,10 +2,10 @@ exports.errorHandler = (error, req, res, next) => {
   const status = error.status || 400;
   let message = error.message;
   let code;
-  console.log(error.message);
-  console.log(error.stack);
-  console.log(error.name);
-  console.log(error.stack);
+  let err = JSON.stringify(error);
+  err = JSON.parse(err);
+  console.log(err);
+  //console.log("Error name " + error.name);
   if (error.name == "SequelizeUniqueConstraintError") {
     message = `ID REGISTRADO EN LA BASE DE DATOS`;
     code = 99;

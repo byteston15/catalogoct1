@@ -17,7 +17,7 @@ const Foto = sq.define(
     },
     url: {
       type: DataTypes.STRING(100),
-      allowNull: false,
+      allowNull: true,
     },
   },
   { freezeTableName: true, paranoid: true, timestamps: false }
