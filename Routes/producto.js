@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const Foto = require("../Models/Foto");
-const { Op } = require("sequelize");
 const sq = require("../Db/conn");
 const {
   createProducto,

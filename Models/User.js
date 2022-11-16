@@ -35,19 +35,4 @@ const User = sq.define(
   { freezeTableName: true, paranoid: true }
 );
 
-User.hasMany(Lista_Producto, {
-  foreignKey: {
-    name: "fk_user_lproducto",
-  },
-  sourceKey: "id_user",
-});
-
-Lista_Producto.belongsTo(User, {
-  foreignKey: {
-    name: "fk_user_lproducto",
-    allowNull: false,
-  },
-  targetKey: "id_user",
-});
-
 module.exports = User;

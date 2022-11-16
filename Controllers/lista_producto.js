@@ -1,5 +1,6 @@
 const Lista_Producto = require("../Models/Lista_Producto");
 const sq = require("../Db/conn");
+const Lista_precio = require("../Models/Lista_precio");
 
 exports.createPrecio = async (req, res, next) => {
   try {
@@ -74,7 +75,12 @@ exports.deletePrecio = async (req, res, next) => {
 
 exports.getPrecio = async (req, res, next) => {
   try {
-    const precio = await Lista_Producto.findAll();
+    const precio = await Lista_Producto.findAll({
+      include: {
+        model: Lista_precio,
+        attributes: ["nombre"],
+      },
+    });
     res.status(200).json({
       success: true,
       len: precio.length,
