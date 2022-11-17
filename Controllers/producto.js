@@ -1,6 +1,7 @@
 const sq = require("../Db/conn");
 const Producto = require("../Models/Producto");
 const { Op } = require("sequelize");
+const Foto = require("../Models/Foto");
 
 exports.createProducto = async (req, res, next) => {
   try {
@@ -36,6 +37,11 @@ exports.getProductos = async (req, res, next) => {
       };
     }
     const producto = await Producto.findAll({ where: whereCondition });
+    const foto = await Foto.findAll({
+      where: {
+        //llamar a la foto
+      },
+    });
     if (!producto) {
       return res.status(404).json({
         success: false,

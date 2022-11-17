@@ -2,6 +2,7 @@ const sq = require("../Db/conn");
 const { DataTypes } = require("sequelize");
 const Foto = require("./Foto");
 const Lista_Producto = require("./Lista_Producto");
+const Lista_precio = require("./Lista_precio");
 
 const Producto = sq.define(
   "Producto",
@@ -42,35 +43,30 @@ Producto.beforeCreate(async (producto, options) => {
   }
 });
 
+Producto.belongsToMany(Lista_precio, {
+  through: Lista_Producto,
+  primaryKey: true,
+  allowNull: false,
+});
+
+Lista_precio.belongsToMany(Producto, {
+  through: Lista_Producto,
+  primaryKey: true,
+  allowNull: false,
+});
+
 Producto.hasMany(Foto, {
-  foreingKey: {
-    name: "fk_producto_foto",
+  foreignKey: {
     allowNull: false,
+    name: "fk_producto",
   },
   sourceKey: "codigo",
 });
 
 Foto.belongsTo(Producto, {
-  foreingKey: {
-    name: "fk_producto_foto",
-    allowNull: false,
-  },
-  targetKey: "codigo",
-});
-
-Producto.hasMany(Lista_Producto, {
   foreignKey: {
-    name: "fk_precio",
     allowNull: false,
-  },
-  sourceKey: "codigo",
-});
-
-Lista_Producto.belongsTo(Producto, {
-  foreignKey: {
-    name: "fk_precio",
-    allowNull: false,
-    primaryKey: true,
+    name: "fk_producto",
   },
   targetKey: "codigo",
 });

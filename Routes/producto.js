@@ -44,7 +44,7 @@ router
       const t = sq.transaction(async (t) => {
         const foto = await Foto.create({
           name: req.file.filename,
-          url: req.file.destination,
+          url: req.file.destination + "/" + req.file.filename,
           fk_producto_foto: req.params.id,
         });
         return foto;
@@ -54,7 +54,7 @@ router
         data: {
           created: {
             filename: req.file.filename,
-            orinalname: req.file.originalname,
+            originalname: req.file.originalname,
           },
         },
       });

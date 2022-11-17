@@ -20,21 +20,4 @@ const Lista_precio = sq.define(
   { freezeTableName: true }
 );
 
-Lista_precio.hasMany(Lista_Producto, {
-  foreignKey: {
-    name: "fk_precio_listaprecio",
-    allowNull: false,
-  },
-  sourceKey: "id",
-});
-
-Lista_Producto.belongsTo(Lista_precio, {
-  foreignKey: {
-    name: "fk_precio_listaprecio",
-    allowNull: false,
-    primaryKey: true,
-  },
-  targetKey: "id",
-});
-
 module.exports = Lista_precio;
