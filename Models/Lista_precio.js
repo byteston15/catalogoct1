@@ -8,6 +8,7 @@ const Lista_precio = sq.define(
     id: {
       type: DataTypes.INTEGER(3),
       primaryKey: true,
+      autoIncrement: true,
     },
     nombre: {
       type: DataTypes.STRING(100),

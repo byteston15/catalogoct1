@@ -5,7 +5,7 @@ exports.testConn = async () => {
   try {
     sq.authenticate();
     await sq.sync({
-      // force: true,
+      //force: true,
     });
     console.log("Database connection succesfully".green);
   } catch (err) {

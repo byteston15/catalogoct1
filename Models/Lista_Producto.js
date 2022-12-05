@@ -5,12 +5,12 @@ const Lista_Producto = sq.define(
   "Lista_Producto",
   {
     desde: {
-      //Cantidad
+      //monto
       type: DataTypes.INTEGER(10),
       allowNull: false,
     },
     hasta: {
-      //Cantidad
+      //monto
       type: DataTypes.INTEGER(10),
       allowNull: false,
     },
