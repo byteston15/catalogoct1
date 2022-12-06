@@ -10,6 +10,8 @@ const {
   updateProducto,
 } = require("../Controllers/producto");
 
+const { getFotos } = require("../Controllers/foto");
+
 const {
   getPrecio,
   createPrecio,
@@ -39,14 +41,17 @@ const upload = multer({ storage: storage });
 
 router
   .route("/productos/:id/fotos")
+  .get(getFotos)
   .post(upload.single("image"), async (req, res, next) => {
     try {
       const t = sq.transaction(async (t) => {
         const foto = await Foto.create({
           name: req.file.filename,
           url: req.file.destination + "/" + req.file.filename,
-          fk_producto_foto: req.params.id,
+          path: req.host,
+          fk_producto: req.params.id,
         });
+        console.log(foto);
         return foto;
       });
       res.status(201).json({
