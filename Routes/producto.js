@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const Foto = require("../Models/Foto");
-const sq = require("../Db/conn");
+
 const {
   createProducto,
   deleteProducto,
@@ -10,7 +8,7 @@ const {
   updateProducto,
 } = require("../Controllers/producto");
 
-const { getFotos } = require("../Controllers/foto");
+const { getFotos, uploadFoto } = require("../Controllers/foto");
 
 const {
   getPrecio,
@@ -28,48 +26,10 @@ router.route("/productos/precio").post(createPrecio).get(getPrecio);
 router.route("/productos/precio/:id").put(updatePrecio).delete(deletePrecio);
 
 //Images
-let storage = multer.diskStorage({
-  destination: "Public/Images",
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      Date.now() + "-" + req.params.id + "." + file.mimetype.split("/")[1]
-    );
-  },
-});
-const upload = multer({ storage: storage });
 
 router
   .route("/productos/:id/fotos")
   .get(getFotos)
-  .post(upload.single("image"), async (req, res, next) => {
-    try {
-      const t = sq.transaction(async (t) => {
-        const foto = await Foto.create({
-          name: req.file.filename,
-          url: req.file.destination + "/" + req.file.filename,
-          path: req.host,
-          fk_producto: req.params.id,
-        });
-        console.log(foto);
-        return foto;
-      });
-      res.status(201).json({
-        success: true,
-        data: {
-          created: {
-            filename: req.file.filename,
-            originalname: req.file.originalname,
-          },
-        },
-      });
-    } catch (err) {
-      console.log(err.stack);
-      res.status(400).json({
-        success: false,
-        error: err.message,
-      });
-    }
-  });
+  .post(uploadFoto)
 
 module.exports = router;

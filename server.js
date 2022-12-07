@@ -2,6 +2,7 @@ const express = require("express");
 const colors = require("colors");
 const dotenv = require("dotenv");
 const { testConn } = require("./Db/test");
+
 //Rutas
 const r_ciudad = require("./Routes/ciudad");
 const r_giro = require("./Routes/giro");
@@ -14,7 +15,9 @@ const r_user = require("./Routes/usuario");
 const r_producto = require("./Routes/producto");
 const { validAuth } = require("./Middlewares/validAuthenticate");
 const { errorHandler } = require("./Middlewares/errorHandler");
+const fileUpload = require("express-fileupload");
 const app = express();
+
 
 //Configuración de dotenv
 dotenv.config({ path: "./Config/config.env" });
@@ -27,7 +30,7 @@ testConn();
 //json middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(__dirname + "Public/Images"));
+app.use(express.static(__dirname + "Public"));
 
 /*Métodos : GET({controlador : getGiros, ruta : "/giros"},
  {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
@@ -63,7 +66,7 @@ app.use(process.env.RUTA, r_user);
 
 /*Métodos : GET({controlador : getGiros, ruta : "/giros"},
  {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
-app.use(process.env.RUTA, r_producto);
+app.use(process.env.RUTA, fileUpload({useTempFiles : true, tempFileDir : '/tmp/'}),  r_producto);
 
 //TERMINO DE RUTAS
 app.use(errorHandler);
