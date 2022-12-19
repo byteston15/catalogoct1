@@ -15,7 +15,6 @@ const r_user = require("./Routes/usuario");
 const r_producto = require("./Routes/producto");
 const { validAuth } = require("./Middlewares/validAuthenticate");
 const { errorHandler } = require("./Middlewares/errorHandler");
-const fileUpload = require("express-fileupload");
 const app = express();
 
 
@@ -66,7 +65,7 @@ app.use(process.env.RUTA, r_user);
 
 /*Métodos : GET({controlador : getGiros, ruta : "/giros"},
  {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
-app.use(process.env.RUTA, fileUpload({useTempFiles : true, tempFileDir : '/tmp/'}),  r_producto);
+app.use(process.env.RUTA,  r_producto);
 
 //TERMINO DE RUTAS
 app.use(errorHandler);

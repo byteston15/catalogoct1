@@ -11,12 +11,12 @@ const Foto = sq.define(
       primaryKey: true,
     },
     name: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING(150),
       allowNull: false,
       unique: true,
     },
     url: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(300),
       allowNull: true,
     },
   },

@@ -1,4 +1,5 @@
 const express = require("express");
+const fileUpload = require("express-fileupload");
 const router = express.Router();
 
 const {
@@ -30,6 +31,6 @@ router.route("/productos/precio/:id").put(updatePrecio).delete(deletePrecio);
 router
   .route("/productos/:id/fotos")
   .get(getFotos)
-  .post(uploadFoto)
+  .post(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }), uploadFoto);
 
 module.exports = router;
