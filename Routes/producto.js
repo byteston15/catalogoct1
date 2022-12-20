@@ -9,7 +9,12 @@ const {
   updateProducto,
 } = require("../Controllers/producto");
 
-const { getFotos, uploadFoto } = require("../Controllers/foto");
+const {
+  getFoto,
+  uploadFoto,
+  deleteFoto,
+  getUrls,
+} = require("../Controllers/foto");
 
 const {
   getPrecio,
@@ -28,9 +33,12 @@ router.route("/productos/precio/:id").put(updatePrecio).delete(deletePrecio);
 
 //Images
 
+router.route("/productos/:id/urls").get(getUrls);
+
 router
   .route("/productos/:id/fotos")
-  .get(getFotos)
-  .post(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }), uploadFoto);
+  .get(getFoto)
+  .post(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }), uploadFoto)
+  .delete(deleteFoto);
 
 module.exports = router;

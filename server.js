@@ -17,7 +17,6 @@ const { validAuth } = require("./Middlewares/validAuthenticate");
 const { errorHandler } = require("./Middlewares/errorHandler");
 const app = express();
 
-
 //Configuración de dotenv
 dotenv.config({ path: "./Config/config.env" });
 //CONSTANTES
@@ -65,7 +64,7 @@ app.use(process.env.RUTA, r_user);
 
 /*Métodos : GET({controlador : getGiros, ruta : "/giros"},
  {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
-app.use(process.env.RUTA,  r_producto);
+app.use(process.env.RUTA, r_producto);
 
 //TERMINO DE RUTAS
 app.use(errorHandler);
