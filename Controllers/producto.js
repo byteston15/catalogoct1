@@ -47,7 +47,7 @@ exports.getProductos = async (req, res, next) => {
         },
       };
     }
-    if (req.query.order) {
+    if (req.query.order) { //Campo por el que vamos a ordenar
       orderArray.push(req.query.order);
     }
 
@@ -56,7 +56,7 @@ exports.getProductos = async (req, res, next) => {
     }
     console.log(orderArray);
 
-    let whereVal = Object.assign(whereCondition, whereCategory);
+     whereCondition = Object.assign(whereCondition, whereCategory);
 
     const producto = await Producto.findAll({
       where: whereCondition,

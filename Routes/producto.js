@@ -23,16 +23,19 @@ const {
   updatePrecio,
 } = require("../Controllers/lista_producto");
 
+const {
+  getHistory
+} = require("../Controllers/history.js")
+
 //Productos
 router.route("/productos/:id").put(updateProducto).delete(deleteProducto);
 router.route("/productos").post(createProducto).get(getProductos);
 
 //Precios
-router.route("/productos/precio").post(createPrecio).get(getPrecio);
-router.route("/productos/precio/:id").put(updatePrecio).delete(deletePrecio);
+router.route("/productos/precios").post(createPrecio).get(getPrecio);
+router.route("/productos/:id/precios").put(updatePrecio).delete(deletePrecio);
 
 //Images
-
 router.route("/productos/:id/urls").get(getUrls);
 
 router
@@ -41,4 +44,6 @@ router
   .post(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }), uploadFoto)
   .delete(deleteFoto);
 
-module.exports = router;
+router.route("/productos/history").get(getHistory)
+
+  module.exports = router;

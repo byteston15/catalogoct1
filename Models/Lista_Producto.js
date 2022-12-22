@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sq = require("../Db/conn");
+const Historial = require("./Historial-prod");
 
 const Lista_Producto = sq.define(
   "Lista_Producto",
@@ -26,5 +27,6 @@ const Lista_Producto = sq.define(
   },
   { paranoid: true, freezeTableName: true }
 );
+
 
 module.exports = Lista_Producto;

@@ -43,37 +43,9 @@ Producto.beforeCreate(async (producto, options) => {
   }
 });
 
-Lista_Producto.belongsTo(Producto, {
-  foreignKey: {
-    name: "fk_lp_producto",
-    allowNull: false,
-  },
-  targetKey: "codigo",
-});
 
-Producto.hasMany(Lista_Producto, {
-  foreignKey: {
-    name: "fk_lp_producto",
-    allowNull: false,
-  },
-  sourceKey: "codigo",
-});
-
-Lista_Producto.belongsTo(Lista_precio, {
-  foreignKey: {
-    name: "fk_lp_listaprecio",
-    allowNull: false,
-  },
-  targetKey: "id",
-});
-
-Lista_precio.hasMany(Lista_Producto, {
-  foreignKey: {
-    name: "fk_lp_listaprecio",
-    allowNull: false,
-  },
-  sourceKey: "id",
-});
+Lista_precio.belongsToMany(Producto,  {through : Lista_Producto , foreignKey : {name : 'fk_lp_listaprecio'}})
+Producto.belongsToMany(Lista_precio,  {through : Lista_Producto , foreignKey : {name : 'fk_lp_producto'}})
 
 Producto.hasMany(Foto, {
   foreignKey: {
