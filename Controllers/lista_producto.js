@@ -22,22 +22,25 @@ exports.createPrecio = async (req, res, next) => {
 };
 
 exports.updatePrecio = async (req, res, next) => {
+  //Recibi lp en query obligatoriamente
   try {
     const t = sq.transaction(async (t) => {
-      console.log(req.body.fk_lp_listaprecio);
-      const lp = await Lista_Producto.update({
-        desde : req.body.desde,
-        hasta : req.body.hasta,
-        monto : req.body.monto,
-        liquidacion : req.body.liquidacion,
-        fk_lp_listaprecio : req.query.lp,
-        fk_lp_producto : req.params.id
-      }, {
+      const lp = await Lista_Producto.update(req.body, {
         where: {
           fk_lp_producto: req.params.id,
           fk_lp_listaprecio: req.query.lp,
         },
       });
+      if (!req.query.lp) {
+        return res.status(400).json({
+          success: false,
+          data: {
+            error: {
+              message: "No se indico lp id para modificar en el query",
+            },
+          },
+        });
+      }
       if (!lp) {
         return res.status(404).json({
           success: false,
@@ -61,8 +64,21 @@ exports.updatePrecio = async (req, res, next) => {
 exports.deletePrecio = async (req, res, next) => {
   try {
     const t = sq.transaction(async (t) => {
+      if (!req.query.lp) {
+        return res.status(400).json({
+          success: false,
+          data: {
+            error: {
+              message: "No se indico lp id para modificar en el query",
+            },
+          },
+        });
+      }
       const lp = await Lista_Producto.destroy({
-        where: { id: req.params.id },
+        where: {
+          fk_lp_producto: req.params.id,
+          fk_lp_listaprecio: req.query.lp,
+        },
       });
       if (!lp) {
         return res.status(404).json({
@@ -87,10 +103,7 @@ exports.deletePrecio = async (req, res, next) => {
 exports.getPrecio = async (req, res, next) => {
   try {
     const precio = await Lista_Producto.findAll({
-      include: {
-        model: Lista_precio,
-        attributes: ["nombre"],
-      },
+      include: { model: Lista_precio, attributes: ["nombre"] },
     });
     res.status(200).json({
       success: true,

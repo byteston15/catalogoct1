@@ -54,7 +54,6 @@ exports.getProductos = async (req, res, next) => {
     if (req.query.how) {
       orderArray.push(req.query.how);
     }
-    console.log(orderArray);
 
      whereCondition = Object.assign(whereCondition, whereCategory);
 

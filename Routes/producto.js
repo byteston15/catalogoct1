@@ -33,7 +33,7 @@ router.route("/productos").post(createProducto).get(getProductos);
 
 //Precios
 router.route("/productos/precios").post(createPrecio).get(getPrecio);
-router.route("/productos/:id/precios").put(updatePrecio).delete(deletePrecio);
+router.route("/productos/:id/precios").put(updatePrecio).delete(deletePrecio);//Recibe como query lp
 
 //Images
 router.route("/productos/:id/urls").get(getUrls);
