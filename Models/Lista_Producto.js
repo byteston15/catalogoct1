@@ -25,7 +25,7 @@ const Lista_Producto = sq.define(
       defaultValue: false,
     },
   },
-  { paranoid: true, freezeTableName: true }
+  { paranoid: true, freezeTableName: true, timestamps : false }
 );
 
 

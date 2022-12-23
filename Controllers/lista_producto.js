@@ -24,8 +24,19 @@ exports.createPrecio = async (req, res, next) => {
 exports.updatePrecio = async (req, res, next) => {
   try {
     const t = sq.transaction(async (t) => {
-      const lp = await Lista_Producto.update(req.body, {
-        where: { id: req.params.id },
+      console.log(req.body.fk_lp_listaprecio);
+      const lp = await Lista_Producto.update({
+        desde : req.body.desde,
+        hasta : req.body.hasta,
+        monto : req.body.monto,
+        liquidacion : req.body.liquidacion,
+        fk_lp_listaprecio : req.query.lp,
+        fk_lp_producto : req.params.id
+      }, {
+        where: {
+          fk_lp_producto: req.params.id,
+          fk_lp_listaprecio: req.query.lp,
+        },
       });
       if (!lp) {
         return res.status(404).json({

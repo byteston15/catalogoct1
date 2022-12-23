@@ -43,9 +43,42 @@ Producto.beforeCreate(async (producto, options) => {
   }
 });
 
-
 Lista_precio.belongsToMany(Producto,  {through : Lista_Producto , foreignKey : {name : 'fk_lp_listaprecio'}})
+Producto.hasMany(Lista_Producto, {
+  foreignKey : {
+    name : 'fk_lp_listaprecio',
+    allowNull : false,
+    primaryKey : true
+  }
+})
+
+Lista_Producto.belongsTo(Producto, {
+  foreignKey : {
+    name : 'fk_lp_listaprecio',
+    allowNull : false,
+    primaryKey : true
+  }
+})
+
+
+
+
 Producto.belongsToMany(Lista_precio,  {through : Lista_Producto , foreignKey : {name : 'fk_lp_producto'}})
+Lista_precio.hasMany(Lista_Producto, {
+  foreignKey : {
+    name : 'fk_lp_producto',
+    allowNull : false,
+    primaryKey : true
+  }
+})
+
+Lista_Producto.belongsTo(Lista_precio, {
+  foreignKey : {
+    name : 'fk_lp_producto',
+    allowNull  :false, 
+    primaryKey : true
+  }
+})
 
 Producto.hasMany(Foto, {
   foreignKey: {

@@ -12,7 +12,7 @@ const Lista_precio = sq.define(
     },
     nombre: {
       type: DataTypes.STRING(100),
-      allowNull: true,
+      allowNull: false,
       set(val) {
         this.setDataValue("nombre", val.toUpperCase());
       },

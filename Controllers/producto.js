@@ -34,7 +34,7 @@ exports.getProductos = async (req, res, next) => {
     let exclude = ["createdAt", "deletedAt", "updatedAt"];
     let whereCondition = {};
     let whereCategory = {};
-    let orderArray = [];
+    let orderArray = ["codigo"];
     if (req.query.category) {
       whereCategory = {
         fk_categoria_producto: req.query.category,
@@ -48,7 +48,7 @@ exports.getProductos = async (req, res, next) => {
       };
     }
     if (req.query.order) { //Campo por el que vamos a ordenar
-      orderArray.push(req.query.order);
+      orderArray = [req.query.order]
     }
 
     if (req.query.how) {
