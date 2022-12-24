@@ -47,15 +47,16 @@ exports.getProductos = async (req, res, next) => {
         },
       };
     }
-    if (req.query.order) { //Campo por el que vamos a ordenar
-      orderArray = [req.query.order]
+    if (req.query.order) {
+      //Campo por el que vamos a ordenar
+      orderArray = [req.query.order];
     }
 
     if (req.query.how) {
       orderArray.push(req.query.how);
     }
 
-     whereCondition = Object.assign(whereCondition, whereCategory);
+    whereCondition = Object.assign(whereCondition, whereCategory);
 
     const producto = await Producto.findAll({
       where: whereCondition,
@@ -158,6 +159,37 @@ exports.deleteProducto = async (req, res, next) => {
       success: false,
       data: {
         error: err.message,
+      },
+    });
+  }
+};
+
+exports.getNews = async (req, res, next) => {
+  try {
+    //en productos se puede hacer
+    //donde createdAt - curdate = 30
+    //en productos se puede hacer
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      data: {
+        error: {
+          message: err.message,
+        },
+      },
+    });
+  }
+};
+
+exports.getOnSale = async (req, res, next) => {
+  try {
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      data: {
+        error: {
+          message: err.message,
+        },
       },
     });
   }

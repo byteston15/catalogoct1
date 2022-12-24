@@ -1,16 +1,33 @@
-const sq = require("../Db/conn");
 const History = require("../Models/Historial-prod");
 const { Op } = require("sequelize");
+const colors = require("colors")
+
 
 exports.getHistory = async (req, res, next) => {
   try {
     let whereObj = {};
-    if (req.query.name) {
+    if(!req.query.start || req.query.end){
+      return res.status(400).json({
+        success : false, 
+        data : {
+          error : {
+            message : 'No se entrego el query de start y end'
+          }
+        }
+      })
+    }else {
       whereObj = {
+        fecha : {
+          [Op.between]  : [ req.query.start, req.query.end ]
+        }
+      }
+    }
+    if (req.query.name) {
+      whereObj = Object.assign(whereObj,{
         name: {
           [Op.like]: `%${req.query.name}%`,
         },
-      };
+      })
     }
     if (req.query.categoria) {
       whereObj = Object.assign(whereObj, {
@@ -22,6 +39,8 @@ exports.getHistory = async (req, res, next) => {
             codigo : req.query.codigo
         }
     }
+    
+    console.log("WhereObj".red)
 
     //Calling
     const h1 = await History.findAll({ where: whereObj });
