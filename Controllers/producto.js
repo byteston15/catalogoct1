@@ -169,6 +169,30 @@ exports.getNews = async (req, res, next) => {
     //en productos se puede hacer
     //donde createdAt - curdate = 30
     //en productos se puede hacer
+    const p1 = await Producto.findAll({
+      where : {
+        createdAt : {
+          [Op.lte] : req.query.time
+        }
+      }
+    })
+    if(!p1) {
+      return res.status(404).json({
+        success : false, 
+        data : {
+          error : {
+            message : 'No se encuentran datos'
+          }
+        }
+      })
+    }
+    res.status(200).json({
+      success : true, 
+      len : p1.length, 
+      data : {
+        p1
+      }
+    })
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -183,6 +207,17 @@ exports.getNews = async (req, res, next) => {
 
 exports.getOnSale = async (req, res, next) => {
   try {
+    const productos = await Producto.findAll({
+      attributes : {
+        include : [
+          [
+            sq.literal(`(
+              SELECT 
+            )`)
+          ]
+        ]
+      }
+    })
   } catch (err) {
     res.status(500).json({
       success: false,
