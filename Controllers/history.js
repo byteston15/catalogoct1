@@ -6,7 +6,7 @@ const colors = require("colors")
 exports.getHistory = async (req, res, next) => {
   try {
     let whereObj = {};
-    if(!req.query.start || req.query.end){
+    if(!req.query.start && !req.query.end){
       return res.status(400).json({
         success : false, 
         data : {

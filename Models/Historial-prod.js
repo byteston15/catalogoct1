@@ -1,7 +1,7 @@
 const sq = require("../Db/conn")
 const {DataTypes} =  require("sequelize")
 
-sq.define('Historial', {
+const History = sq.define('Historial', {
    fk_producto : {
         type : DataTypes.STRING(30),
         allowNull : false,
@@ -33,3 +33,6 @@ sq.define('Historial', {
       allowNull : false
    }
 }, {freezeTableName :true, paranoid : true, timestamps : false})
+
+
+module.exports = History

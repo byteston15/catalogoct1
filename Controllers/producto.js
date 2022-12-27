@@ -1,6 +1,6 @@
 const sq = require("../Db/conn");
 const Producto = require("../Models/Producto");
-const { Op } = require("sequelize");
+const { Op, QueryTypes } = require("sequelize");
 const Foto = require("../Models/Foto");
 const Categoria = require("../Models/Categoria");
 const Lista_Producto = require("../Models/Lista_Producto");
@@ -166,33 +166,42 @@ exports.deleteProducto = async (req, res, next) => {
 
 exports.getNews = async (req, res, next) => {
   try {
-    //en productos se puede hacer
-    //donde createdAt - curdate = 30
-    //en productos se puede hacer
+    let dias;
+    let date = new Date();
+
+    if (!req.query.dias) {
+      dias = 30;
+    } else {
+      dias = req.query.dias;
+    }
+    //Resta días a la fecha actual, dados por query o -30 por default
+    let priorDate = new Date(new Date().setDate(date.getDate() - dias));
+
+    console.log(priorDate);
     const p1 = await Producto.findAll({
-      where : {
-        createdAt : {
-          [Op.lte] : req.query.time
-        }
-      }
-    })
-    if(!p1) {
+      where: {
+        createdAt: {
+          [Op.between]: [priorDate, date],
+        },
+      },
+    });
+    if (!p1) {
       return res.status(404).json({
-        success : false, 
-        data : {
-          error : {
-            message : 'No se encuentran datos'
-          }
-        }
-      })
+        success: false,
+        data: {
+          error: {
+            message: "No se encuentran datos",
+          },
+        },
+      });
     }
     res.status(200).json({
-      success : true, 
-      len : p1.length, 
-      data : {
-        p1
-      }
-    })
+      success: true,
+      len: p1.length,
+      data: {
+        p1,
+      },
+    });
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -207,17 +216,46 @@ exports.getNews = async (req, res, next) => {
 
 exports.getOnSale = async (req, res, next) => {
   try {
-    const productos = await Producto.findAll({
-      attributes : {
-        include : [
-          [
-            sq.literal(`(
-              SELECT 
-            )`)
-          ]
-        ]
-      }
-    })
+    const productos = await sq.query(
+      ` 
+        select p.descripcion as 'Descripción producto' , p.codigo as 'Código producto', 
+        c.id as ' ID Categoría', c.nombre as 'Nombre Categoría', 
+        lp.desde as 'Desde actual', lp.hasta as 'Hasta actual', lp.monto as 'Monto actual', lp.liquidacion as 'Liquidación actual',
+        lp2.nombre as 'Nombre lista precio', lp2.id as 'ID lista precio',
+        h.id as 'id historial', h.monto as 'Monto historial', h.desde as 'Desde historial' , h.hasta as 'Hasta historial',
+        h.liquidacion as 'liquidación historial', h.fecha as 'fecha historial'
+        from producto p
+        join categoria c 
+        on c.id = p.fk_categoria_producto 
+        join lista_producto lp 
+        on lp.fk_lp_producto = p.codigo 
+        join lista_precio lp2 
+        on lp2.id  = lp.fk_lp_listaprecio 
+        join historial h 
+        on h.fk_producto = lp.fk_lp_producto 
+        where h.monto > lp.monto 
+        group by h.fk_producto, h.fk_lista 
+        having max(h.fecha)
+                    `,
+      { type: QueryTypes.SELECT }
+    );
+    if (!productos) {
+      return res.status(404).json({
+        success: false,
+        data: {
+          error: {
+            message: "No se encontraron datos",
+          },
+        },
+      });
+    }
+    res.status(200).json({
+      success: true,
+      len: productos.length,
+      data: {
+        productos,
+      },
+    });
   } catch (err) {
     res.status(500).json({
       success: false,

@@ -7,6 +7,8 @@ const {
   deleteProducto,
   getProductos,
   updateProducto,
+  getNews,
+  getOnSale
 } = require("../Controllers/producto");
 
 const {
@@ -44,6 +46,9 @@ router
   .post(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }), uploadFoto)
   .delete(deleteFoto);
 
-router.route("/productos/history").get(getHistory)
 
+//Historial
+router.route("/productos/historial").get(getHistory)
+router.route("/productos/nuevos").get(getNews)
+router.route("/productos/ofertas").get(getOnSale)
   module.exports = router;

@@ -119,7 +119,7 @@ exports.getClienteFull = async (req, res, next) => {
       where: { rut: req.params.id },
       attributes: ["rut", "correo", "nombre", "direccion", "depto"],
       include: [
-        { model: Giro, attributes: ["nombre"] },
+        { model: Giro, attributes: ["nombre"]},
         {
           model: Comuna,
           attributes: ["nombre"],
