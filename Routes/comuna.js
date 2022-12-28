@@ -3,6 +3,6 @@ const { getComuna, getClientByComuna } = require("../Controllers/comuna");
 const router = express.Router();
 
 router.route("/comunas").get(getComuna);
-router.route("/comuna/:id/clientes").get(getClientByComuna);
+router.route("/comunas/:id/clientes").get(getClientByComuna);
 
 module.exports = router;

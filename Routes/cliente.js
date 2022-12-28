@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
+
 const {
-  getCliente,
   updateCliente,
   createCliente,
   getClientes,
@@ -9,11 +9,7 @@ const {
   getClienteFull,
 } = require("../Controllers/cliente");
 
-router
-  .route("/clientes/:id")
-  .get(getCliente)
-  .put(updateCliente)
-  .delete(deleteCliente);
+router.route("/clientes/:id").put(updateCliente).delete(deleteCliente);
 router.route("/clientes").post(createCliente).get(getClientes);
 router.route("/clienteFull/:id").get(getClienteFull);
 

@@ -128,7 +128,16 @@ exports.updateProducto = async (req, res, next) => {
       });
       return producto;
     });
-  } catch (err) {}
+  } catch (err) {
+    res.status(500).json({
+      success : false, 
+      data: {
+        error : {
+          message : err.message
+        }
+      }
+    })
+  }
 };
 
 exports.deleteProducto = async (req, res, next) => {
