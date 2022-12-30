@@ -22,21 +22,9 @@ exports.getHistory = async (req, res, next) => {
         }
       }
     }
-    if (req.query.name) {
-      whereObj = Object.assign(whereObj,{
-        name: {
-          [Op.like]: `%${req.query.name}%`,
-        },
-      })
-    }
-    if (req.query.categoria) {
-      whereObj = Object.assign(whereObj, {
-        fk_categoria: req.query.categoria,
-      });
-    }
     if(req.query.codigo) {
         whereObj = {
-            codigo : req.query.codigo
+            fk_producto : req.query.codigo
         }
     }
     

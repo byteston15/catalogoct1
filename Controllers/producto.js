@@ -35,9 +35,9 @@ exports.getProductos = async (req, res, next) => {
     let whereCondition = {};
     let whereCategory = {};
     let orderArray = ["codigo"];
-    if (req.query.category) {
+    if (req.query.categoria) {
       whereCategory = {
-        fk_categoria_producto: req.query.category,
+        fk_categoria_producto: req.query.categoria,
       };
     }
     if (req.query.descripcion) {
