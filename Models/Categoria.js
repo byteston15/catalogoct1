@@ -9,6 +9,13 @@ const Categoria = sq.define(
       primaryKey: true,
       type: DataTypes.STRING(10),
       allowNull: false,
+      validate : {
+        typeOfVals(val) {
+          if(typeof val != typeof this.id) {
+            throw new Error("Los tipos entregados en JSON no coinciden")
+          }
+        }
+        }
     },
     nombre: {
       type: DataTypes.STRING(100),
@@ -25,7 +32,7 @@ const Categoria = sq.define(
       unique: true,
     },
   },
-  { freezeTableName: true, paranoid: true }
+  { freezeTableName: true, paranoid: true },
 );
 
 Categoria.hasMany(Producto, {
