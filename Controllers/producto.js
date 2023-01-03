@@ -225,27 +225,35 @@ exports.getNews = async (req, res, next) => {
 
 exports.getOnSale = async (req, res, next) => {
   try {
+    let monto = 0;
+    if(req.query.monto) {
+      monto = req.query.monto
+    }
     const productos = await sq.query(
-      ` 
-        select p.descripcion as 'Descripción producto' , p.codigo as 'Código producto', 
-        c.id as ' ID Categoría', c.nombre as 'Nombre Categoría', 
-        lp.desde as 'Desde actual', lp.hasta as 'Hasta actual', lp.monto as 'Monto actual', lp.liquidacion as 'Liquidación actual',
-        lp2.nombre as 'Nombre lista precio', lp2.id as 'ID lista precio',
-        h.id as 'id historial', h.monto as 'Monto historial', h.desde as 'Desde historial' , h.hasta as 'Hasta historial',
-        h.liquidacion as 'liquidación historial', h.fecha as 'fecha historial'
-        from producto p
-        join categoria c 
-        on c.id = p.fk_categoria_producto 
-        join lista_producto lp 
-        on lp.fk_lp_producto = p.codigo 
-        join lista_precio lp2 
-        on lp2.id  = lp.fk_lp_listaprecio 
-        join historial h 
-        on h.fk_producto = lp.fk_lp_producto 
-        where h.monto > lp.monto 
-        group by h.fk_producto, h.fk_lista 
-        having max(h.fecha)
-                    `,
+      ` select 
+          (lp.monto  - h1.monto ) as 'descuento',
+          h1.id, h1.desde as 'desde historial', h1.hasta as 'hasta historial',
+          h1.fk_producto as 'codigo producto', p.descripcion  as 'descripción',
+          c.nombre as 'categoría', lp2.nombre as 'Lista de precio',
+          h1.fk_lista as 'id lista precio', h1.fecha as 'fecha cambio',
+          lp.desde as 'desde actual', lp.hasta as 'hasta actual', 
+          lp.monto as 'monto actual', lp.liquidacion as 'liquidacion'
+        from lista_producto lp 
+          join historial h1
+          on h1.fk_producto = lp.fk_lp_producto 
+          join producto p 
+          on p.codigo = h1.fk_producto 
+          join categoria c 
+          on c.id = p.fk_categoria_producto 
+          join lista_precio lp2 
+          on lp2.id = h1.fk_lista 
+        where h1.id = ( 
+            select max(id)
+            from historial h 
+            where h.fk_producto = lp.fk_lp_producto  
+            and h.fk_lista = lp.fk_lp_listaprecio  
+            )
+			  and lp.monto - h1.monto < ${monto}; `,
       { type: QueryTypes.SELECT }
     );
     if (!productos) {
