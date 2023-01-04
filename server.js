@@ -15,7 +15,7 @@ const r_user = require("./Routes/usuario");
 const r_producto = require("./Routes/producto");
 const { validAuth } = require("./Middlewares/validAuthenticate");
 const { errorHandler } = require("./Middlewares/errorHandler");
-const { notNull } = require("./Middlewares/notNull");
+const { validarCampos } = require("./Middlewares/validarCampos");
 const app = express();
 
 //Configuración de dotenv
@@ -31,9 +31,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + "Public"));
 
+
 /*Métodos : GET({controlador : getGiros, ruta : "/giros"},
  {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
-app.use(process.env.RUTA, r_ciudad);
+app.use(process.env.RUTA,r_ciudad);
 
 /*Métodos : GET({controlador : getGiros, ruta : "/giros"},
  {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
@@ -68,8 +69,11 @@ app.use(process.env.RUTA, r_user);
 app.use(process.env.RUTA, r_producto);
 
 //TERMINO DE RUTAS
-app.use(errorHandler, notNull)
-//app.use(errorHandler);
+app.use((error, req, res, next) => {
+  console.log("ERROR HANDLING")
+})
+
+
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`.green)
 );

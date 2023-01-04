@@ -14,7 +14,6 @@ exports.createCategoria = async (req, res, next) => {
         success: true,
         data: req.body,
       });
-
       return categoria;
     });
   } catch (err) {
