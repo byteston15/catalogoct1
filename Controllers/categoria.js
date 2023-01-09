@@ -5,6 +5,7 @@ const Lista_Producto = require("../Models/Lista_Producto");
 const Foto = require("../Models/Foto");
 const Lista_precio = require("../Models/Lista_precio");
 const { Op } = require("sequelize");
+const Api404Error = require("../Utils/apiErrors");
 
 exports.createCategoria = async (req, res, next) => {
   try {
@@ -45,6 +46,7 @@ exports.getCategorias = async (req, res, next) => {
         error: err.message,
       },
     });
+    next(err)
   }
 };
 
@@ -52,10 +54,7 @@ exports.getCategoria = async (req, res, next) => {
   try {
     const categoria = await Categoria.findByPk(req.params.id);
     if (!categoria) {
-      return res.status(404).json({
-        success: false,
-        error: "No se encuentra categoria con el id indicado",
-      });
+      throw new Api404Error(`Categoría con el id ${req.params.id} no encontrado`)
     }
     res.status(200).json({
       success: true,
@@ -67,6 +66,7 @@ exports.getCategoria = async (req, res, next) => {
       success: false,
       error: err.message,
     });
+    next(err)
   }
 };
 

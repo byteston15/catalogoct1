@@ -69,10 +69,7 @@ app.use(process.env.RUTA, r_user);
 app.use(process.env.RUTA, r_producto);
 
 //TERMINO DE RUTAS
-app.use((error, req, res, next) => {
-  console.log("ERROR HANDLING")
-})
-
+app.use()
 
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`.green)
