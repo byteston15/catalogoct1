@@ -1,28 +1,24 @@
-const colors = require("colors");
-const { BaseError } = require("sequelize/types");
+const { BaseError } = require("sequelize");
 
-exports.logError = (err, req, res, next) => {
+/*function logError(err, req, res, next) {
   console.error(err);
-};
-
-exports.logErrorMidleware = (err, req, res, next) => {
-  logError(err);
   next(err);
-};
+}*/
 
-exports.returnError = (err, req, res, next) => {
+function returnError(err, req, res, next) {
   res.status(err.statusCode || 500).json({
     success: false,
     data: {
       error: {
         message: err.message,
-        description: err.description,
+        isOperational: err.isOperational,
       },
     },
   });
-};
+  next(err);
+}
 
-exports.isOperationalError = (error) => {
+const isOperationalError = (error) => {
   if (error instanceof BaseError) {
     return error.isOperational;
   }
@@ -30,8 +26,7 @@ exports.isOperationalError = (error) => {
 };
 
 module.exports = {
-  logError,
-  logErrorMidleware,
-  returnError,
   isOperationalError,
+  returnError,
+  logError,
 };

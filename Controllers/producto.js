@@ -19,15 +19,9 @@ exports.createProducto = async (req, res, next) => {
       return producto;
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: false,
-      data: {
-        error: err.mess, // LIKage,
-      },
-    });
-  }
-};
+    next(err)
+  }; 
+}
 
 exports.getProductos = async (req, res, next) => {
   try {

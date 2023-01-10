@@ -5,7 +5,7 @@ const Lista_Producto = require("../Models/Lista_Producto");
 const Foto = require("../Models/Foto");
 const Lista_precio = require("../Models/Lista_precio");
 const { Op } = require("sequelize");
-const Api404Error = require("../Utils/apiErrors");
+const Api404Error = require("../Utils/api404Error");
 
 exports.createCategoria = async (req, res, next) => {
   try {
@@ -54,18 +54,13 @@ exports.getCategoria = async (req, res, next) => {
   try {
     const categoria = await Categoria.findByPk(req.params.id);
     if (!categoria) {
-      throw new Api404Error(`Categoría con el id ${req.params.id} no encontrado`)
+      throw new Api404Error(`Categoría con el id ${req.params.id} no encontrada`)
     }
     res.status(200).json({
       success: true,
       data: categoria,
     });
   } catch (err) {
-    console.log(`Error Stack :${err.stack}`);
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
     next(err)
   }
 };

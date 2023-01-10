@@ -14,8 +14,7 @@ const r_login = require("./Routes/auth");
 const r_user = require("./Routes/usuario");
 const r_producto = require("./Routes/producto");
 const { validAuth } = require("./Middlewares/validAuthenticate");
-const { errorHandler } = require("./Middlewares/errorHandler");
-const { validarCampos } = require("./Middlewares/validarCampos");
+const { isOperationalError } = require("./Middlewares/errorHandler");
 const app = express();
 
 //Configuración de dotenv
@@ -31,10 +30,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + "Public"));
 
-
 /*Métodos : GET({controlador : getGiros, ruta : "/giros"},
  {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
-app.use(process.env.RUTA,r_ciudad);
+app.use(process.env.RUTA, r_ciudad);
 
 /*Métodos : GET({controlador : getGiros, ruta : "/giros"},
  {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
@@ -69,8 +67,29 @@ app.use(process.env.RUTA, r_user);
 app.use(process.env.RUTA, r_producto);
 
 //TERMINO DE RUTAS
-app.use()
+app.use((err, req, res, next) => {
+  res.status(err.statusCode || 500).json({
+    success: false,
+    data: {
+      error: {
+        message: err.message,
+        isOperational: err.isOperational,
+      },
+    },
+  });
+  next(err);
+});
 
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`.green)
-);
+const server = app.listen(PORT, console.log(`running on port ${PORT}`));
+
+process.on("unhandledRejection", (error) => {
+  throw error;
+});
+
+process.on("uncaughtException", (error) => {
+  console.error(error);
+
+  if (!isOperationalError(error)) {
+    server.close(() => process.exit(1));
+  }
+});
