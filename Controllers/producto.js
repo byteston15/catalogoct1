@@ -5,6 +5,7 @@ const Foto = require("../Models/Foto");
 const Categoria = require("../Models/Categoria");
 const Lista_Producto = require("../Models/Lista_Producto");
 const Lista_precio = require("../Models/Lista_precio");
+const { NotFound, BadRequest } = require("../Utils/errors");
 
 exports.createProducto = async (req, res, next) => {
   try {
@@ -19,9 +20,9 @@ exports.createProducto = async (req, res, next) => {
       return producto;
     });
   } catch (err) {
-  next(err)
-  }; 
-}
+    next(err);
+  }
+};
 
 exports.getProductos = async (req, res, next) => {
   try {
@@ -102,17 +103,12 @@ exports.getProductos = async (req, res, next) => {
 
 exports.updateProducto = async (req, res, next) => {
   try {
-    const t = sq.transaction(async (t) => {
+    const t = await sq.transaction(async (t) => {
       const producto = await Producto.update(req.body, {
         where: { codigo: req.params.id },
       });
-      if (!producto) {
-        return res.status(404).json({
-          success: false,
-          data: {
-            error: "No data",
-          },
-        });
+      if(producto[0] == 0) {
+        throw new NotFound(`No se encuentra producto con el id ${req.params.id}`)
       }
       res.status(200).json({
         success: true,
@@ -120,17 +116,10 @@ exports.updateProducto = async (req, res, next) => {
           updated: req.body,
         },
       });
-      return producto;
+      return producto
     });
   } catch (err) {
-    res.status(500).json({
-      success : false, 
-      data: {
-        error : {
-          message : err.message
-        }
-      }
-    })
+    next(err);
   }
 };
 
@@ -220,8 +209,8 @@ exports.getNews = async (req, res, next) => {
 exports.getOnSale = async (req, res, next) => {
   try {
     let monto = 0;
-    if(req.query.monto) {
-      monto = req.query.monto
+    if (req.query.monto) {
+      monto = req.query.monto;
     }
     const productos = await sq.query(
       ` select 

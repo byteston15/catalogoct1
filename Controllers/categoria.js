@@ -46,7 +46,7 @@ exports.getCategorias = async (req, res, next) => {
         error: err.message,
       },
     });
-    next(err)
+    next(err);
   }
 };
 
@@ -54,14 +54,14 @@ exports.getCategoria = async (req, res, next) => {
   try {
     const categoria = await Categoria.findByPk(req.params.id);
     if (!categoria) {
-    throw new NotFound(`No se encontró la categoría con id ${req.params.id}`)
+      throw new NotFound(`No se encontró la categoría con id ${req.params.id}`);
     }
     res.status(200).json({
       success: true,
       data: categoria,
     });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 

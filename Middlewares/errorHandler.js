@@ -1,12 +1,15 @@
 const { GeneralError } = require("../Utils/errors");
+const colors = require("colors")
 
 const printError = (error) => {
-  console.error(error);
+  console.log("---------------------------".red)
+  console.log(error)
+  console.log("---------------------------".red)
 };
 
 
 const logError = (err, req, res, next) => {
-  printError(err.stack)
+  printError(err)
   next(err)
 }
 

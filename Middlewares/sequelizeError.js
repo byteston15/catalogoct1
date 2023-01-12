@@ -6,7 +6,6 @@ const sequelizeError = (err, req, res, next) => {
     for (val of err.errors) {
       fields.push({
         type: val.type,
-        name: val.message,
         field: val.path,
       });
     }
@@ -19,6 +18,28 @@ const sequelizeError = (err, req, res, next) => {
       },
     });
   }
+  if (err.name == "SequelizeForeignKeyConstraintError") {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 102,
+        field: err.fields[0],
+        name: err.name,
+      },
+    });
+  }
+
+  if (err.name == "SequelizeUniqueConstraintError") {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 103,
+        name : err.name
+      },
+    });
+  }
+
+  next(err);
 };
 
 module.exports = sequelizeError;
