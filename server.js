@@ -3,6 +3,8 @@ const colors = require("colors");
 const dotenv = require("dotenv");
 const { testConn } = require("./Db/test");
 
+
+
 //Rutas
 const r_ciudad = require("./Routes/ciudad");
 const r_giro = require("./Routes/giro");
@@ -14,8 +16,12 @@ const r_login = require("./Routes/auth");
 const r_user = require("./Routes/usuario");
 const r_producto = require("./Routes/producto");
 const { validAuth } = require("./Middlewares/validAuthenticate");
-const { isOperationalError } = require("./Middlewares/errorHandler");
 const app = express();
+
+
+//Middlewares
+const {handleErrors, logError} = require("./Middlewares/errorHandler");
+const sequelizeError = require("./Middlewares/sequelizeError")
 
 //Configuración de dotenv
 dotenv.config({ path: "./Config/config.env" });
@@ -66,30 +72,10 @@ app.use(process.env.RUTA, r_user);
  {controlador : getClientByGiro, ruta : "/giros/:id/clientes"})*/
 app.use(process.env.RUTA, r_producto);
 
-//TERMINO DE RUTAS
-app.use((err, req, res, next) => {
-  res.status(err.statusCode || 500).json({
-    success: false,
-    data: {
-      error: {
-        message: err.message,
-        isOperational: err.isOperational,
-      },
-    },
-  });
-  next(err);
-});
+//Errors handlers
+app.use(logError)
+app.use(sequelizeError)
+app.use(handleErrors)
+
 
 const server = app.listen(PORT, console.log(`running on port ${PORT}`));
-
-process.on("unhandledRejection", (error) => {
-  throw error;
-});
-
-process.on("uncaughtException", (error) => {
-  console.error(error);
-
-  if (!isOperationalError(error)) {
-    server.close(() => process.exit(1));
-  }
-});

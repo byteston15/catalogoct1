@@ -8,7 +8,7 @@ const Lista_precio = require("../Models/Lista_precio");
 
 exports.createProducto = async (req, res, next) => {
   try {
-    const t = sq.transaction(async (t) => {
+    const result = await sq.transaction(async (t) => {
       const producto = await Producto.create(req.body);
       res.status(201).json({
         success: true,
@@ -19,7 +19,7 @@ exports.createProducto = async (req, res, next) => {
       return producto;
     });
   } catch (err) {
-    next(err)
+  next(err)
   }; 
 }
 

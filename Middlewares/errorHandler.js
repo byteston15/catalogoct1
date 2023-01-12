@@ -1,32 +1,33 @@
-const { BaseError } = require("sequelize");
+const { GeneralError } = require("../Utils/errors");
 
-/*function logError(err, req, res, next) {
-  console.error(err);
-  next(err);
-}*/
+const printError = (error) => {
+  console.error(error);
+};
 
-function returnError(err, req, res, next) {
-  res.status(err.statusCode || 500).json({
-    success: false,
-    data: {
-      error: {
-        message: err.message,
-        isOperational: err.isOperational,
-      },
-    },
-  });
-  next(err);
+
+const logError = (err, req, res, next) => {
+  printError(err.stack)
+  next(err)
 }
 
-const isOperationalError = (error) => {
-  if (error instanceof BaseError) {
-    return error.isOperational;
+const handleErrors = (err, req, res, next) => {
+  if (err instanceof GeneralError) {
+    return res.status(err.getCode()).json({
+      success: false,
+      data: {
+        error: {
+          message: err.message,
+        },
+      },
+    });
   }
-  return false;
+
+  return res.status(500).json({
+    success: false,
+    error: {
+      message: err.message,
+    },
+  });
 };
 
-module.exports = {
-  isOperationalError,
-  returnError,
-  logError,
-};
+module.exports = {handleErrors, logError};
