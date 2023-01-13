@@ -9,13 +9,13 @@ const Categoria = sq.define(
       primaryKey: true,
       type: DataTypes.STRING(10),
       allowNull: false,
-      validate : {
+      validate: {
         typeOfVals(val) {
-          if(typeof val != typeof this.id) {
-            throw new Error("Los tipos entregados en JSON no coinciden")
+          if (typeof val != typeof this.id) {
+            throw new Error("Los tipos entregados en JSON no coinciden");
           }
-        }
-        }
+        },
+      },
     },
     nombre: {
       type: DataTypes.STRING(100),
@@ -26,13 +26,19 @@ const Categoria = sq.define(
         },
       },
       set(val) {
+        if (typeof val !== "string") {
+          console.log("Convirtiendo a string");
+          let x = val.toString();
+          val = x;
+          console.log(typeof val);
+        }
         this.setDataValue("nombre", val.toUpperCase());
       },
       allowNull: false,
       unique: true,
     },
   },
-  { freezeTableName: true, paranoid: true },
+  { freezeTableName: true, paranoid: true }
 );
 
 Categoria.hasMany(Producto, {
