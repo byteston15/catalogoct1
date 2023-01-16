@@ -4,7 +4,7 @@ const Lista_precio = require("../Models/Lista_precio");
 
 exports.createPrecio = async (req, res, next) => {
   try {
-    const result = sq.transaction(async (t) => {
+    const result = await sq.transaction(async (t) => {
       const precio = await Lista_Producto.create(req.body);
       res.status(201).json({
         success: true,
@@ -13,18 +13,14 @@ exports.createPrecio = async (req, res, next) => {
       return precio;
     });
   } catch (err) {
-    console.log(`Error stack : ${err.stack}`);
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    next(err)
   }
 };
 
 exports.updatePrecio = async (req, res, next) => {
   //Recibi lp en query obligatoriamente
   try {
-    const t = sq.transaction(async (t) => {
+    const t = await sq.transaction(async (t) => {
       const lp = await Lista_Producto.update(req.body, {
         where: {
           fk_lp_producto: req.params.id,
@@ -63,7 +59,7 @@ exports.updatePrecio = async (req, res, next) => {
 
 exports.deletePrecio = async (req, res, next) => {
   try {
-    const t = sq.transaction(async (t) => {
+    const t = await sq.transaction(async (t) => {
       if (!req.query.lp) {
         return res.status(400).json({
           success: false,

@@ -10,6 +10,9 @@ const infoError = {
   FkDoesntExist : {
     code : 102,
     description : "La fk indicada no existe."
+  },
+  UniqueConstraint : {
+    description : 'La pk ya existe en la base de datos'
   }
 };
 

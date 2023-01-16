@@ -2,6 +2,8 @@ const { GeneralError } = require("../Utils/errors");
 
 const sequelizeError = (err, req, res, next) => {
   let fields = [];
+
+  
   if (err.name == "SequelizeValidationError") {
     for (val of err.errors) {
       fields.push({
@@ -30,6 +32,7 @@ const sequelizeError = (err, req, res, next) => {
   }
 
   if (err.name == "SequelizeUniqueConstraintError") {
+    console.log("SequelizeShit")
     return res.status(400).json({
       success: false,
       error: {
