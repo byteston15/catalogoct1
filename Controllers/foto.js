@@ -2,31 +2,18 @@ const Foto = require("../Models/Foto");
 const sq = require("../Db/conn");
 const path = require("path");
 const fs = require("fs");
+const { BadRequest, NotFound } = require("../Utils/errors");
 
 exports.getFoto = async (req, res, next) => {
   //Indicar solamente el nombre y así enviará
   try {
     if (!req.query.name) {
-      return res.status(400).json({
-        success: false,
-        data: {
-          error: {
-            message: "No se entrego el query name",
-          },
-        },
-      });
+      throw new BadRequest(`el req.query.name es obligatorio`)
     }
     const foto = await Foto.findOne({ where: { name: req.query.name } });
 
     if (!foto) {
-      return res.status(404).json({
-        success: false,
-        data: {
-          error: {
-            message: "No existen fotos para el name indicado",
-          },
-        },
-      });
+      throw new NotFound(`No se encontró la foto con el id ${req.query.name}`)
     } else {
       return res.sendFile(
         path.join(__dirname, "..", "/uploads", req.query.name),
@@ -41,18 +28,13 @@ exports.getFoto = async (req, res, next) => {
               },
             });
           } else {
-            next();
+            next(err);
           }
         }
       );
     }
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: {
-        message: err.message,
-      },
-    });
+    next(err)
   }
 };
 
@@ -60,14 +42,7 @@ exports.uploadFoto = async (req, res, next) => {
   const extensiones = ["png", "jpg", "jpeg", "gif"];
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).json({
-        success: false,
-        data: {
-          error: {
-            message: "No se cargaron archivos",
-          },
-        },
-      });
+      throw new BadRequest(`No se entrego un file`)
     }
 
     //Crear el file
@@ -76,32 +51,19 @@ exports.uploadFoto = async (req, res, next) => {
     const extension = cutName[cutName.length - 1];
 
     if (!extension.includes(extension)) {
-      return res.status(400).json({
-        success: false,
-        data: {
-          error: {
-            message: err.message,
-          },
-        },
-      });
+      throw new BadRequest(`El archivo no corresponde a las extesiones permitidas, jpg, png, jpeg, gif`)
     }
     const tempName = Date.now() + "." + req.params.id + "." + extension;
     let uploadUrl = path.join(__dirname, "../uploads", tempName);
 
     archivo.mv(uploadUrl, (err) => {
       if (err) {
-        console.log(err);
-        return res.status(500).json({
-          success: false,
-          error: {
-            message: err.message,
-          },
-        });
+        next(err)
       }
     });
 
     //Crear el registro
-    const t = sq.transaction(async (t) => {
+    const t = await sq.transaction(async (t) => {
       const foto = await Foto.create({
         name: tempName,
         url: uploadUrl,
@@ -116,54 +78,25 @@ exports.uploadFoto = async (req, res, next) => {
       return foto;
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: false,
-      data: {
-        error: {
-          message: err.message,
-        },
-      },
-    });
-  }
+    next(err)
+    }
 };
 
 exports.deleteFoto = async (req, res, next) => {
   try {
     if (!req.query.name) {
-      return res.status(400).json({
-        success: false,
-        data: {
-          error: {
-            message: "No se entrego el req.query.name",
-          },
-        },
-      });
+      throw new BadRequest(`El req.query.name es obligatorio`)
     }
-    const t = sq.transaction(async (t) => {
+    const t = await sq.transaction(async (t) => {
       const foto = await Foto.destroy({ where: { name: req.query.name } });
       if (!foto) {
-        return res.status(404).json({
-          success: false,
-          data: {
-            error: {
-              message: "No existe el archivo con el path indicado",
-            },
-          },
-        });
+        throw new NotFound(`No se encontro foto con el name : ${req.query.name}`)
       }
       fs.unlink(
         path.join(__dirname, "..", "/uploads", req.query.name),
         (err) => {
           if (err) {
-            return res.status(400).json({
-              success: false,
-              data: {
-                error: {
-                  message: err.message,
-                },
-              },
-            });
+            next(err)
           } else {
             res.status(200).json({
               success: true,
@@ -177,14 +110,7 @@ exports.deleteFoto = async (req, res, next) => {
       );
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      data: {
-        error: {
-          message: err.message,
-        },
-      },
-    });
+    next(err)
   }
 };
 
@@ -192,14 +118,7 @@ exports.getUrls = async (req, res, next) => {
   try {
     const f = await Foto.findAll({ where: { fk_producto: req.params.id } });
     if (!f) {
-      return res.status(404).json({
-        success: false,
-        data: {
-          error: {
-            message: "No existen archivos para el id mencionado",
-          },
-        },
-      });
+      throw new NotFound(`No se encontro url con el id: ${req.params.id}`)
     }
     res.status(200).json({
       success: true,
@@ -208,13 +127,6 @@ exports.getUrls = async (req, res, next) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      data: {
-        error: {
-          message: err.message,
-        },
-      },
-    });
+    next(err)
   }
 };

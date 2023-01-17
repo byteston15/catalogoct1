@@ -8,10 +8,8 @@ exports.getCiudad = async (req, res, next) => {
       data: ciudad,
     });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
-  }
+  next(err)
+    }
 };
 
 exports.getComunasxCiudad = async (req, res, next) => {
@@ -26,10 +24,6 @@ exports.getComunasxCiudad = async (req, res, next) => {
       data: comuna,
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: false,
-      data: err.message,
-    });
+  next(err)
   }
 };

@@ -4,6 +4,7 @@ const Giro = require("../Models/Giro");
 const Comuna = require("..//Models/Comuna");
 const Ciudad = require("../Models/Ciudad");
 const sq = require("../Db/conn");
+const { NotFound } = require("../Utils/errors");
 
 /*DESPLIEGA TODOS LOS CLIENTES */
 exports.getClientes = async (req, res, next) => {
@@ -14,27 +15,21 @@ exports.getClientes = async (req, res, next) => {
       data: cliente,
     });
   } catch (err) {
-    console.log(`Error message : ${err.message.stack}`);
-    res.status(500).json({
-      success: false,
-    });
+    next(err);
   }
 };
 
 /* UPDATE CLIENTE */
 exports.updateCliente = async (req, res, next) => {
   try {
-    const t = sq.transaction(async (t) => {
+    const t = await sq.transaction(async (t) => {
       const cliente = await Cliente.update(req.body, {
         where: { rut: req.params.id },
       });
       if (!cliente) {
-        return res.status(404).json({
-          success: false,
-          data: {
-            error: "No se encuentran datos para el valor indicado",
-          },
-        });
+        throw new NotFound(
+          `No se encontro cliente con el rut ${req.params.id}`
+        );
       }
       res.status(200).json({
         success: true,
@@ -45,16 +40,10 @@ exports.updateCliente = async (req, res, next) => {
       return cliente;
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      data: {
-        error: {
-          message: err.message,
-        },
-      },
-    });
+    next(err);
   }
 };
+
 /*CREATE CLIENTE */
 exports.createCliente = async (req, res, next) => {
   try {
@@ -67,11 +56,7 @@ exports.createCliente = async (req, res, next) => {
       return cliente;
     });
   } catch (err) {
-    console.log(`Error message : ${err.stack}`);
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
+    next(err);
   }
 };
 
@@ -81,19 +66,14 @@ exports.deleteCliente = async (req, res, next) => {
     const result = await sq.transaction(async (t) => {
       const cliente = await Cliente.destroy({ where: { rut: req.params.id } });
       if (!cliente) {
-        return res.status(404).json({
-          success: false,
-          message: "No existe cliente con el id indicado",
-        });
+        throw new NotFound(
+          `No se encontro cliente con el rut ${req.params.id}`
+        );
       }
       res.status(200).json({ success: true, data: {} });
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
+    next(err);
   }
 };
 
@@ -130,9 +110,6 @@ exports.getClienteFull = async (req, res, next) => {
       data: cliente,
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    next(err);
   }
 };

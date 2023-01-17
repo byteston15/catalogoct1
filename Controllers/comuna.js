@@ -1,5 +1,6 @@
 const Comuna = require("../Models/Comuna");
 const Cliente = require("../Models/Cliente");
+const {NotFound} = require("../Utils/errors")
 
 exports.getComuna = async (req, res, next) => {
   try {
@@ -8,9 +9,7 @@ exports.getComuna = async (req, res, next) => {
       data: comuna,
     });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
+  next(err)
   }
 };
 
@@ -21,21 +20,13 @@ exports.getClientByComuna = async (req, res, next) => {
       where: { fk_id_comuna: req.params.id },
     });
     if (!cliente) {
-      res
-        .status(404)
-        .json({
-          success: false,
-          error: "No existen clientes para la comuna }",
-        });
+      throw new NotFound(`No se encontró cliente con la comúna indicada, id : ${req.params.id}`)
     }
     res.status(200).json({
       success: true,
       data: cliente,
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    next(err)
   }
 };

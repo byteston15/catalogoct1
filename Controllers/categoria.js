@@ -5,7 +5,7 @@ const Lista_Producto = require("../Models/Lista_Producto");
 const Foto = require("../Models/Foto");
 const Lista_precio = require("../Models/Lista_precio");
 const { Op } = require("sequelize");
-const { NotFound } = require("../Utils/errors");
+const { NotFound, BadRequest } = require("../Utils/errors");
 
 exports.createCategoria = async (req, res, next) => {
   try {
@@ -40,12 +40,6 @@ exports.getCategorias = async (req, res, next) => {
       data: categoria,
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      data: {
-        error: err.message,
-      },
-    });
     next(err);
   }
 };
@@ -67,15 +61,14 @@ exports.getCategoria = async (req, res, next) => {
 
 exports.updateCategoria = async (req, res, next) => {
   try {
-    const result = sq.transaction(async (t) => {
+    const result = await sq.transaction(async (t) => {
       const categoria = await Categoria.update(req.body, {
         where: { id: req.params.id },
       });
       if (!categoria) {
-        return res.status(404).json({
-          success: false,
-          error: "Categoria no encontrada con el id indicado",
-        });
+        throw new NotFound(
+          `No se encontro la categoría con el id ${req.params.id}`
+        );
       }
       res.status(200).json({
         success: true,
@@ -84,24 +77,20 @@ exports.updateCategoria = async (req, res, next) => {
       return categoria;
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    next(err);
   }
 };
 
 exports.deleteCategoria = async (req, res, next) => {
   try {
-    const result = sq.transaction(async (t) => {
+    const result = await sq.transaction(async (t) => {
       const categoria = await Categoria.destroy({
         where: { id: req.params.id },
       });
       if (!categoria) {
-        return res.status(404).json({
-          success: false,
-          error: "No se encontraron categorías con el id mencionado",
-        });
+        throw new NotFound(
+          `No se encontro categoría con el id ${req.params.id}`
+        );
       }
       res.status(200).json({
         success: true,
@@ -110,10 +99,7 @@ exports.deleteCategoria = async (req, res, next) => {
       return categoria;
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    next(err);
   }
 };
 
@@ -138,12 +124,9 @@ exports.findProductByCategoria = async (req, res, next) => {
       ],
     });
     if (!productos) {
-      return res.status(404).json({
-        success: false,
-        data: {
-          error: "No data",
-        },
-      });
+      throw new NotFound(
+        `No se encontraron productos con el id de categoría ${req.params.id}`
+      );
     }
     res.status(200).json({
       success: true,
@@ -153,12 +136,6 @@ exports.findProductByCategoria = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: false,
-      data: {
-        error: err.message,
-      },
-    });
+    next(err);
   }
 };

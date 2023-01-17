@@ -1,5 +1,6 @@
 const Giro = require("../Models/Giro");
 const Cliente = require("../Models/Cliente");
+const { NotFound } = require("../Utils/errors");
 
 exports.getGiros = async (req, res, next) => {
   try {
@@ -8,9 +9,7 @@ exports.getGiros = async (req, res, next) => {
       data: giro,
     });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
+    next(err);
   }
 };
 
@@ -18,21 +17,16 @@ exports.getGiros = async (req, res, next) => {
 exports.getClientByGiro = async (req, res, next) => {
   try {
     const cliente = await Cliente.findAll({
-      where: { fk_id_comuna: req.params.id },
+      where: { fk_id_giro: req.params.id },
     });
     if (!cliente) {
-      res
-        .status(404)
-        .json({ success: false, error: "No existen clientes para el giro }" });
+      throw new NotFound(`No se encontro cliente con el giro ${req.params.id}`);
     }
     res.status(200).json({
       success: true,
       data: cliente,
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    next(err);
   }
 };

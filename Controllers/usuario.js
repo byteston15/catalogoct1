@@ -1,10 +1,11 @@
 const sq = require("../Db/conn");
 const User = require("../Models/User");
 const { Op } = require("sequelize");
+const { NotFound } = require("../Utils/errors");
 
 exports.createUser = async (req, res, next) => {
   try {
-    const t = sq.transaction(async (t) => {
+    const t = await sq.transaction(async (t) => {
       const user = await User.create(req.body);
       res.status(201).json({
         success: true,
@@ -15,13 +16,7 @@ exports.createUser = async (req, res, next) => {
       return user;
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: false,
-      data: {
-        error: err.message,
-      },
-    });
+    next(err);
   }
 };
 
@@ -44,31 +39,22 @@ exports.getUsers = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: true,
-      data: {
-        error: err.message,
-      },
-    });
+    next(err);
   }
 };
 
 exports.updateUser = async (req, res, next) => {
   try {
-    const t = sq.transaction(async (t) => {
+    const t = await sq.transaction(async (t) => {
       const user = await User.update(req.body, {
         where: {
           id_user: req.params.id,
         },
       });
       if (!user) {
-        return res.status(404).json({
-          success: false,
-          data: {
-            error: "No data",
-          },
-        });
+        throw new NotFound(
+          `No se encontro usuario con el rut ${req.params.id}`
+        );
       }
       res.status(200).json({
         success: true,
@@ -79,27 +65,18 @@ exports.updateUser = async (req, res, next) => {
       return user;
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: false,
-      data: {
-        error: err.message,
-      },
-    });
+    next(err);
   }
 };
 
 exports.deleteUser = async (req, res, next) => {
   try {
-    const t = sq.transaction(async (t) => {
+    const t = await sq.transaction(async (t) => {
       const user = await User.destroy({ where: { id_user: req.params.id } });
       if (!user) {
-        return res.status(404).json({
-          success: false,
-          data: {
-            error: "No data",
-          },
-        });
+        throw new NotFound(
+          `No se encontro usuario con el rut ${req.params.id}`
+        );
       }
       res.status(200).json({
         success: true,
@@ -110,13 +87,6 @@ exports.deleteUser = async (req, res, next) => {
       return user;
     });
   } catch (err) {
-    console.log(err.stack);
-    await t.rollback();
-    res.status(500).json({
-      success: false,
-      data: {
-        error: err.message,
-      },
-    });
+    next(err)
   }
 };

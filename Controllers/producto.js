@@ -76,12 +76,7 @@ exports.getProductos = async (req, res, next) => {
       attributes: { exclude: exclude },
     });
     if (!producto) {
-      return res.status(404).json({
-        success: false,
-        data: {
-          error: "No data",
-        },
-      });
+      throw new NotFound(`No se encontaron productos`);
     }
     res.status(200).json({
       success: true,
@@ -91,13 +86,7 @@ exports.getProductos = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: true,
-      data: {
-        error: err.message,
-      },
-    });
+    next(err);
   }
 };
 
@@ -107,8 +96,10 @@ exports.updateProducto = async (req, res, next) => {
       const producto = await Producto.update(req.body, {
         where: { codigo: req.params.id },
       });
-      if(producto[0] == 0) {
-        throw new NotFound(`No se encuentra producto con el id ${req.params.id}`)
+      if (producto[0] == 0) {
+        throw new NotFound(
+          `No se encuentra producto con el id ${req.params.id}`
+        );
       }
       res.status(200).json({
         success: true,
@@ -116,7 +107,7 @@ exports.updateProducto = async (req, res, next) => {
           updated: req.body,
         },
       });
-      return producto
+      return producto;
     });
   } catch (err) {
     next(err);
@@ -125,17 +116,14 @@ exports.updateProducto = async (req, res, next) => {
 
 exports.deleteProducto = async (req, res, next) => {
   try {
-    const t = sq.transaction(async (t) => {
+    const t = await sq.transaction(async (t) => {
       const producto = await Producto.destroy({
         where: { codigo: req.params.id },
       });
       if (!producto) {
-        return res.status(404).json({
-          success: false,
-          data: {
-            error: "No data",
-          },
-        });
+        throw new NotFound(
+          `No se encuentra producto con el código indicado ${req.params.id}`
+        );
       }
       res.status(200).json({
         success: true,
@@ -146,13 +134,7 @@ exports.deleteProducto = async (req, res, next) => {
       return producto;
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: false,
-      data: {
-        error: err.message,
-      },
-    });
+    next(err);
   }
 };
 
@@ -178,14 +160,7 @@ exports.getNews = async (req, res, next) => {
       },
     });
     if (!p1) {
-      return res.status(404).json({
-        success: false,
-        data: {
-          error: {
-            message: "No se encuentran datos",
-          },
-        },
-      });
+      throw new NotFound(`No se encontraron nuevos productos`);
     }
     res.status(200).json({
       success: true,
@@ -195,14 +170,7 @@ exports.getNews = async (req, res, next) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      data: {
-        error: {
-          message: err.message,
-        },
-      },
-    });
+    next(err);
   }
 };
 
@@ -240,14 +208,7 @@ exports.getOnSale = async (req, res, next) => {
       { type: QueryTypes.SELECT }
     );
     if (!productos) {
-      return res.status(404).json({
-        success: false,
-        data: {
-          error: {
-            message: "No se encontraron datos",
-          },
-        },
-      });
+      throw new NotFound(`No se encontraron productos`);
     }
     res.status(200).json({
       success: true,
@@ -257,13 +218,6 @@ exports.getOnSale = async (req, res, next) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      data: {
-        error: {
-          message: err.message,
-        },
-      },
-    });
+    next(err);
   }
 };

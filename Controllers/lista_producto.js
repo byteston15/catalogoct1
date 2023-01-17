@@ -1,6 +1,7 @@
 const Lista_Producto = require("../Models/Lista_Producto");
 const sq = require("../Db/conn");
 const Lista_precio = require("../Models/Lista_precio");
+const { NotFound, BadRequest } = require("../Utils/errors");
 
 exports.createPrecio = async (req, res, next) => {
   try {
@@ -13,7 +14,7 @@ exports.createPrecio = async (req, res, next) => {
       return precio;
     });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -28,20 +29,12 @@ exports.updatePrecio = async (req, res, next) => {
         },
       });
       if (!req.query.lp) {
-        return res.status(400).json({
-          success: false,
-          data: {
-            error: {
-              message: "No se indico lp id para modificar en el query",
-            },
-          },
-        });
+        throw new BadRequest(`El req.query.lp es obligatorio`);
       }
       if (!lp) {
-        return res.status(404).json({
-          success: false,
-          error: "precio no encontrada con el id indicado",
-        });
+        throw new NotFound(
+          `No se encontro precio con el ${req.query.lp} ni con el ${req.params.id}`
+        );
       }
       res.status(200).json({
         success: true,
@@ -50,10 +43,7 @@ exports.updatePrecio = async (req, res, next) => {
       return lp;
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    next(err);
   }
 };
 
@@ -61,14 +51,7 @@ exports.deletePrecio = async (req, res, next) => {
   try {
     const t = await sq.transaction(async (t) => {
       if (!req.query.lp) {
-        return res.status(400).json({
-          success: false,
-          data: {
-            error: {
-              message: "No se indico lp id para modificar en el query",
-            },
-          },
-        });
+        throw new BadRequest(`No se especifico el req.query.lp`);
       }
       const lp = await Lista_Producto.destroy({
         where: {
@@ -77,10 +60,9 @@ exports.deletePrecio = async (req, res, next) => {
         },
       });
       if (!lp) {
-        return res.status(404).json({
-          success: false,
-          error: "No se encontro precio con el id mencionado",
-        });
+        throw new NotFound(
+          `No se encontro precio con la lista de precio :${req.query.lp}, ni con el código ${req.params.id}`
+        );
       }
       res.status(200).json({
         success: true,
@@ -89,10 +71,7 @@ exports.deletePrecio = async (req, res, next) => {
       return lp;
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    next(err);
   }
 };
 
@@ -109,12 +88,6 @@ exports.getPrecio = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err.stack);
-    res.status(500).json({
-      success: false,
-      data: {
-        error: err.message,
-      },
-    });
+    next(err);
   }
 };
